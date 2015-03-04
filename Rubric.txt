@@ -1,6 +1,22 @@
-Lab 8 Milestones:
+Megamaze: Claire Sonderman, Karina Dube, Bobby Flores
 
-SDL Tutorials
+
+Rubric for next 2 weeks:
+(Everyone does all of the SDL things, work collaboratively on Marble class)
+5 pt: Make marble class 
+30 pt: SDL tutorials
+	5 pt: Lesson 1: Set up SDL and get object on screen
+	5 pt: Lesson 2: Optimize Surface loading and blitting 
+	5 pt: Lesson 3: Extension Libraries, loading other image formats
+	5 pt: Lesson 4: Event driven programming
+	5 pt: Lesson 8: Key presses
+	5 pt: Lesson 9: Mouse events
+5 pt: Make something move across screen 
+
+
+
+		
+	
 
 
 
