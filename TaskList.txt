@@ -1,0 +1,40 @@
+Lab 8 Milestones:
+
+Main tasks:
+	-Marble class 
+		-Player marble 
+		-Enemy marbles (two different instantiations
+		 of same object
+		-collision of marbles detection
+	-Implement Maze (Possibly a class? Possibly not)
+		-representation of maze using numbers
+		-0 is space the marble can move in
+		-1 is a wall
+		-2 is the target for the marble
+		-3 is a hole
+		-4 is button
+		-5 is gate-specify which way it swings out
+		-Will come up with more as needed
+	-Graphics for both the maze and the marbles
+		-SDL tutorials
+		-Create mazes (2d)
+		-Create marbles and how to move 
+		-Collision graphics (blow up)
+		-Graphics for winning level - get to target
+	-User interface - keyboard
+		-Use arrow keys to move
+		-Mouse for buttons
+			-Quit button
+			-Pause game
+			-Play
+	-Play mode
+		-Switch different levels
+		-Master maze mode
+		-Timer scoring
+		-High score log
+	-Possible project extension
+		-3d tilting of the board, etc.
+		-User makes own board
+		-Fun obstacles
+		-AI
+		-Mini games - marble pacman
