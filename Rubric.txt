@@ -2,6 +2,7 @@ Megamaze: Claire Sonderman, Karina Dube, Bobby Flores
 
 
 Rubric for next 2 weeks:
+Everyone will submit at least one compilable program involving the tasks below
 (Everyone does all of the SDL things, work collaboratively on Marble class)
 5 pt: Make marble class 
 30 pt: SDL tutorials
