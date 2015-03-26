@@ -29,6 +29,7 @@ Class :: Marble {
 		float yVelocity;
 		SDL_Rect collisionbox;	//detects collision as a box around the marble
 		
+
 };
 
 #endif
