@@ -11,6 +11,8 @@ and may not be redistributed without written permission.*/
 #include <vector>
 #include <algorithm>
 #include <iterator>
+#include <stdlib.h>
+
 using namespace std;
 
 //Screen dimension constants
@@ -110,7 +112,7 @@ void close();
 
 
 //render map
-void renderMap(vector<int> & , vector<int> &);
+void renderMap(vector<int> & , vector<int> &, vector<int> &, vector<int> &);
 
 //Box collision detector
 bool checkCollision( SDL_Rect a, SDL_Rect b );
@@ -361,7 +363,7 @@ void Dot::move( Dot marble, vector<int> marblecollisionX, vector<int> marblecoll
 
 
    //If the dot collided or went too far to the left or right
-	if( ( mPosX < 0 ) || ( mPosX + DOT_WIDTH > SCREEN_WIDTH ) || checkCollision(mCollider, marble.mCollider) )
+	if( ( mPosX < 0 ) || ( mPosX + DOT_WIDTH > SCREEN_WIDTH ) )
     {
         //Move back
         mPosX -= mVelX;
@@ -371,7 +373,7 @@ void Dot::move( Dot marble, vector<int> marblecollisionX, vector<int> marblecoll
    
 
     //If the dot collided or went too far up or down
-    if( ( mPosY < 0 ) || ( mPosY + DOT_HEIGHT > SCREEN_HEIGHT ) || checkCollision(mCollider, marble.mCollider))
+    if( ( mPosY < 0 ) || ( mPosY + DOT_HEIGHT > SCREEN_HEIGHT ) )
     {
         //Move back
         mPosY -= mVelY;
@@ -379,7 +381,11 @@ void Dot::move( Dot marble, vector<int> marblecollisionX, vector<int> marblecoll
     }
 
 
-
+	if (checkCollision(mCollider, marble.mCollider)){
+		cout << "YOU LOSE!!!!!!!" << endl;
+		exit (EXIT_FAILURE);
+		
+	}
 
 
 
@@ -549,6 +555,9 @@ int main( int argc, char* args[] )
 	vector<int> marblecollisionX;
 	vector<int> marblecollisionY;
 
+	vector<int> startx;
+	vector<int> starty;
+
 	//Start up SDL and create window
 	if( !init() )
 	{
@@ -569,11 +578,14 @@ int main( int argc, char* args[] )
 			//Event handler
 			SDL_Event e;
 
-			//The dot that will be moving around on the screen
-			Dot dot(100,65);
+			renderMap(marblecollisionX, marblecollisionY, startx,starty);
 
 			//The dot that will be moving around on the screen
-			Dot marble(150, 65);
+			Dot dot(startx[0],starty[0]);
+
+			//The dot that will be moving around on the screen
+
+			Dot marble(startx[1], starty[1]);
 
 	
 
@@ -610,7 +622,7 @@ int main( int argc, char* args[] )
 				marble.render();
 				
 				//render Map
-				renderMap(marblecollisionX, marblecollisionY);
+				renderMap(marblecollisionX, marblecollisionY, startx, starty);
 	
 				//Update screen
 				SDL_RenderPresent( gRenderer );
@@ -627,7 +639,7 @@ int main( int argc, char* args[] )
 
 
 
-void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY){
+void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, vector<int> & startx, vector<int> & starty){
 /*	//Render background texture to screen
         gBackgroundTexture.render( 0, 0 );
 
@@ -660,6 +672,15 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY){
 		       	if (piece == 'o'){
                             gTargetTexture.render(0+x*25, 40+25*y);
                        	}
+			if (piece == 's'){
+				startx.push_back(0+x*25);				
+				starty.push_back(40+25*y);
+			}
+			if (piece == 'e'){
+				startx.push_back(0+x*25);				
+				starty.push_back(40+25*y);
+			}
+			
                         if (piece == '\n'){
                             y++;
                             x=-1;
