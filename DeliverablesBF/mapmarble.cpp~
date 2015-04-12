@@ -14,8 +14,8 @@ and may not be redistributed without written permission.*/
 using namespace std;
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 1000;
-const int SCREEN_HEIGHT = 1000;
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 800;
 
 //Texture wrapper class
 class LTexture
@@ -327,6 +327,9 @@ void Dot::move( Dot marble, vector<int> marblecollisionX, vector<int> marblecoll
 	mCollider.x = mPosX;
 
  
+	//Move the dot up or down
+    	mPosY += mVelY;
+	mCollider.y = mPosY;
 
 	int n = marblecollisionX.size();
 
@@ -340,9 +343,16 @@ void Dot::move( Dot marble, vector<int> marblecollisionX, vector<int> marblecoll
 		if (checkCollision(mCollider, box)){
 			mPosX -= mVelX;
 			mCollider.x = mPosX;
+			
+					
+		}
+
+
+		if (checkCollision(mCollider, box)){
+			
 			mPosY -= mVelY;
 			mCollider.y = mPosY;
-			cout <<"COLLISION!!!!!!" << endl;		
+					
 		}
 	}
 
@@ -358,9 +368,7 @@ void Dot::move( Dot marble, vector<int> marblecollisionX, vector<int> marblecoll
 		mCollider.x = mPosX;
     }
 
-    //Move the dot up or down
-    mPosY += mVelY;
-	mCollider.y = mPosY;
+   
 
     //If the dot collided or went too far up or down
     if( ( mPosY < 0 ) || ( mPosY + DOT_HEIGHT > SCREEN_HEIGHT ) || checkCollision(mCollider, marble.mCollider))
@@ -562,10 +570,10 @@ int main( int argc, char* args[] )
 			SDL_Event e;
 
 			//The dot that will be moving around on the screen
-			Dot dot(0,10);
+			Dot dot(100,65);
 
 			//The dot that will be moving around on the screen
-			Dot marble(0, 200);
+			Dot marble(150, 65);
 
 	
 
@@ -642,15 +650,15 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY){
         if (mazeFile.is_open()){
                 while (mazeFile.get (piece)){
                         if (piece == '1'){
-                            gBlockTexture.render(0+x*20, 40+20*y);
-              			marblecollisionX.push_back(0+x*20);
-				marblecollisionY.push_back(40+20*y);
+                            gBlockTexture.render(0+x*25, 40+25*y);
+              			marblecollisionX.push_back(0+x*25);
+				marblecollisionY.push_back(40+25*y);
 					        
 				
 			}
               
 		       	if (piece == 'o'){
-                            gTargetTexture.render(0+x*20, 40+20*y);
+                            gTargetTexture.render(0+x*25, 40+25*y);
                        	}
                         if (piece == '\n'){
                             y++;
