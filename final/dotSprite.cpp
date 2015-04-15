@@ -24,7 +24,8 @@ using namespace std;
 extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;
 
-extern LTexture gDotTexture;
+
+
 
 //Box collision detector
 bool checkCollision( SDL_Rect a, SDL_Rect b );
@@ -74,7 +75,7 @@ void Dot::handleEvent( SDL_Event& e )
     }
 }
 
-void Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int> marblecollisionY, int targetx, int targety )
+void Dot::move( Dot marble, vector<int> marblecollisionX, vector<int> marblecollisionY )
 {
     //Move the dot left or right
     mPosX += mVelX;
@@ -110,52 +111,38 @@ void Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<in
 		}
 	}
 
+
+
+
+
    //If the dot collided or went too far to the left or right
 	if( ( mPosX < 0 ) || ( mPosX + DOT_WIDTH > SCREEN_WIDTH ) )
     {
         //Move back
         mPosX -= mVelX;
-	mCollider.x = mPosX;
+		mCollider.x = mPosX;
     }
 
-  
+   
+
     //If the dot collided or went too far up or down
     if( ( mPosY < 0 ) || ( mPosY + DOT_HEIGHT > SCREEN_HEIGHT ) )
     {
         //Move back
         mPosY -= mVelY;
-	mCollider.y = mPosY;
+		mCollider.y = mPosY;
     }
 
-    for (int j = 0; j < allMarbles.size(); j++){
-	if (checkCollision(mCollider, (*allMarbles[j]).mCollider)&&(this != allMarbles[j])){
-		if (player == 1){		
-		    cout << "YOU LOSE!!!!!!!" << endl;
-		    exit (EXIT_FAILURE);
-		}
-		else{
-		    mPosY = -999;
-		    (*allMarbles[j]).mPosX = -999;
-		}
+
+	if (checkCollision(mCollider, marble.mCollider)){
+		cout << "YOU LOSE!!!!!!!" << endl;
+		exit (EXIT_FAILURE);
 		
 	}
-    }
 
-
-	SDL_Rect targetCollider;
-	targetCollider.x = targetx;
-	targetCollider.y = targety;
-	targetCollider.h = 20;
-	targetCollider.w = 20;
-	if (checkCollision(mCollider, targetCollider)){
-		if (player == 0){
-		    cout << "Marble deleted" << endl;
-		}
-		else{
-		    cout << "YOU WIN!!!!!!!" << endl;
-		    exit (EXIT_FAILURE);
-		}
-		
+	if (checkCollision(mCollider, marble.mCollider)){
+		cout << "YOU LOSE!!!!!!!" << endl;
+		exit (EXIT_FAILURE);
 		
 	}
 
@@ -168,9 +155,23 @@ void Dot::render()
     //Show the dot
 	gDotTexture.render( mPosX, mPosY );
 }
+/*			//Render current frame
+				SDL_Rect* currentClip = &gSpriteClips[ frame/5];
+				gSpriteSheetTexture.render( ( SCREEN_WIDTH - currentClip->w ) / 2, ( SCREEN_HEIGHT - currentClip->h ) / 2, currentClip );
 
+				//Update screen
+				SDL_RenderPresent( gRenderer );
 
+				//Go to next frame
+				++frame;
 
+				//Cycle animation
+				if( frame / 6 >= WALKING_ANIMATION_FRAMES )
+				{
+					frame = 0;
+				}
+
+*/
 
 
 bool checkCollision( SDL_Rect a, SDL_Rect b )
@@ -218,3 +219,5 @@ bool checkCollision( SDL_Rect a, SDL_Rect b )
     //If none of the sides from A are outside B
     return true;
 }
+
+
