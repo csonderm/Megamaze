@@ -129,14 +129,8 @@ void Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<in
 
     for (int j = 0; j < allMarbles.size(); j++){
 	if (checkCollision(mCollider, (*allMarbles[j]).mCollider)&&(this != allMarbles[j])){
-		if (player == 1){		
-		    cout << "YOU LOSE!!!!!!!" << endl;
-		    exit (EXIT_FAILURE);
-		}
-		else{
-		    mPosY = -999;
-		    (*allMarbles[j]).mPosX = -999;
-		}
+		cout << "YOU LOSE!!!!!!!" << endl;
+		exit (EXIT_FAILURE);
 		
 	}
     }

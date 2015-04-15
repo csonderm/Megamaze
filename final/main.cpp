@@ -40,7 +40,7 @@ void close();
 
 
 //render map
-void renderMap(vector<int> & , vector<int> &, vector<int> &, vector<int> &, vector<int> & marbleType);
+void renderMap(vector<int> & , vector<int> &, vector<int> &, vector<int> &, vector<int> & marbleType, int & targetx, int & targety);
 
 
 //Scene textures
@@ -155,20 +155,8 @@ void close()
 
 
 
-void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, vector<int> & startx, vector<int> & starty, vector<int> & marbleType){
-/*	//Render background texture to screen
-        gBackgroundTexture.render( 0, 0 );
+void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, vector<int> & startx, vector<int> & starty, vector<int> & marbleType, int & targetx, int & targety){
 
-        //Render Foo' to the screen
-        gBlockTexture.render( 240, 190 );
-
-        //Render Foo' to the screen
-        gBlockTexture.render( 360, 190 );
-
-        for (int i = 0; i*21 < 640; i++){
-               	gBlockTexture.render( i*21, 0 );
-        }
-*/
         //Rendering map from text file
         char piece;
         ifstream mazeFile("levels/lvl1.txt");
@@ -186,6 +174,8 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
               
 		       	if (piece == 'o'){
                             gTargetTexture.render(0+x*20, 40+20*y);
+			    targetx = 0+x*20;
+			    targety = 40+20*y;
                        	}
 			if (piece == 's'){
 				startx.push_back(0+x*20);				
@@ -218,6 +208,8 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
 int main( int argc, char* args[] )
 {
 
+	vector<Dot*> allMarbles;
+
 	vector<int> marblecollisionX; //wall x
 	vector<int> marblecollisionY; //wall y
 
@@ -225,6 +217,8 @@ int main( int argc, char* args[] )
 	vector<int> starty; //vector of marble start y
 	vector<int> marbleType; //vector of marble types (correlates with startx starty)
 
+	int targetx;
+	int targety;
 	//Start up SDL and create window
 	if( !init() )
 	{
@@ -245,15 +239,21 @@ int main( int argc, char* args[] )
 			//Event handler
 			SDL_Event e;
 
-			renderMap(marblecollisionX, marblecollisionY, startx,starty,marbleType);
+			renderMap(marblecollisionX, marblecollisionY, startx,starty,marbleType,targetx,targety);
 
-			//The dot that will be moving around on the screen
+			for (int i = 0; i < startx.size(); i++){
+			    Dot* marble = new Dot(startx[i], starty[i], marbleType[i]);
+			    allMarbles.push_back(marble);
+			}
+
+/*			//The dot that will be moving around on the screen
 			Dot dot(startx[0],starty[0],marbleType[0]);
 
 			//The dot that will be moving around on the screen
 
 			Dot marble(startx[1], starty[1],marbleType[1]);
-
+			Dot marble2(startx[2], starty[2],marbleType[2]);
+*/
 			//While application is running
 			while( !quit )
 			{
@@ -267,28 +267,47 @@ int main( int argc, char* args[] )
 					}
 
 					//Handle input for the dot
-					dot.handleEvent( e );
+					for (int i = 0; i < allMarbles.size(); i++){
+					    allMarbles[i]->handleEvent(e);
+
+					}
+/*					dot.handleEvent( e );
 					marble.handleEvent( e );
-				}
+					marble2.handleEvent( e );
+*/				}
 
 				//Move the dot and check collision
-				dot.move( marble, marblecollisionX,  marblecollisionY );
-				marble.move( dot,marblecollisionX,  marblecollisionY);
+				for (int i = 0; i < allMarbles.size(); i++){
+				     allMarbles[i]->move(allMarbles, marblecollisionX, marblecollisionY, targetx, targety );
+				}
 
-				//Clear screen
+/*				dot.move( marble, marblecollisionX,  marblecollisionY, targetx, targety );
+				marble.move( dot,marblecollisionX,  marblecollisionY, targetx, targety);
+				marble2.move ( marble,marblecollisionX,  marblecollisionY, targetx, targety);
+*/				//Clear screen
 				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				SDL_RenderClear( gRenderer );
-
+				marblecollisionX.clear();
+				marblecollisionY.clear();
+				marbleType.clear();
+				startx.clear();
+				starty.clear();
+				//render Map
+				renderMap(marblecollisionX, marblecollisionY, startx, starty, marbleType,targetx,targety);
 				
-				//Render dot
+				for (int i = 0; i < allMarbles.size(); i++){
+				     allMarbles[i]->render();
+				}
+				
+/*				//Render dot
 				dot.render();
 
 				//Render dot
 				marble.render();
 				
-				//render Map
-				renderMap(marblecollisionX, marblecollisionY, startx, starty, marbleType);
-	
+				//Render dot
+				marble2.render();
+*/	
 				//Update screen
 				SDL_RenderPresent( gRenderer );
 			}
