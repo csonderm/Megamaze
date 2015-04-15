@@ -325,8 +325,8 @@ int main( int argc, char* args[] )
 				SDL_RenderClear( gRenderer );
 
 				//Render current frame
-				SDL_Rect* currentClip = &gSpriteClips[ frame  ];
-				gSpriteSheetTexture.render( ( SCREEN_WIDTH - currentClip->w ) / 10, ( SCREEN_HEIGHT - currentClip->h ) / 10, currentClip );
+				SDL_Rect* currentClip = &gSpriteClips[ frame/5];
+				gSpriteSheetTexture.render( ( SCREEN_WIDTH - currentClip->w ) / 2, ( SCREEN_HEIGHT - currentClip->h ) / 2, currentClip );
 
 				//Update screen
 				SDL_RenderPresent( gRenderer );
@@ -335,7 +335,7 @@ int main( int argc, char* args[] )
 				++frame;
 
 				//Cycle animation
-				if( frame / 5 >= WALKING_ANIMATION_FRAMES )
+				if( frame / 6 >= WALKING_ANIMATION_FRAMES )
 				{
 					frame = 0;
 				}
