@@ -10,24 +10,26 @@ using namespace std;
 
 //interface for marble class to represent either a user or enemy marble
 
-Class :: Marble {
+Class Marble {
 
 	public: 
 		Marble();
 		void handleEvent( SDL_Event& e);	//waits for user to enter key presses
-		void move();	//move marble and determines collision detection
+		void move( SDL_Rect& wall );	//move marble and determines collision detection
 		void render();	//displays marble on screen
 		static const int DOT_WIDTH = 20;
 		static const int DOT_HEIGHT = 20;
 		static const int MAX_VELOCITY = 1;
+		static const int DOT_VEL;
+		
 
 	private: 
-		float xPosition;
-		float yPosition;
+		float mPosX;
+		float mPosY;
 		int type; //enemy or user 
-		float xVelocity;
-		float yVelocity;
-		SDL_Rect collisionbox;	//detects collision as a box around the marble
+		float mVelX;
+		float mVelY;
+		SDL_Rect mCollider;	//detects collision as a box around the marble
 		
 
 };
