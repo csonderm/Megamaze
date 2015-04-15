@@ -29,7 +29,7 @@ extern LTexture gDotTexture;
 //Box collision detector
 bool checkCollision( SDL_Rect a, SDL_Rect b );
 
-Dot::Dot(int x, int y)
+Dot::Dot(int x, int y, int type)
 {
     //Initialize the offsets
     mPosX = x;
@@ -42,6 +42,8 @@ Dot::Dot(int x, int y)
     //Initialize the velocity
     mVelX = 0;
     mVelY = 0;
+
+    player = type;
 }
 
 void Dot::handleEvent( SDL_Event& e )
@@ -137,7 +139,11 @@ void Dot::move( Dot marble, vector<int> marblecollisionX, vector<int> marblecoll
 		
 	}
 
-
+	if (checkCollision(mCollider, marble.mCollider)){
+		cout << "YOU LOSE!!!!!!!" << endl;
+		exit (EXIT_FAILURE);
+		
+	}
 
 
 

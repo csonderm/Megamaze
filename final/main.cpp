@@ -40,7 +40,7 @@ void close();
 
 
 //render map
-void renderMap(vector<int> & , vector<int> &, vector<int> &, vector<int> &);
+void renderMap(vector<int> & , vector<int> &, vector<int> &, vector<int> &, vector<int> & marbleType);
 
 
 //Scene textures
@@ -155,7 +155,7 @@ void close()
 
 
 
-void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, vector<int> & startx, vector<int> & starty){
+void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, vector<int> & startx, vector<int> & starty, vector<int> & marbleType){
 /*	//Render background texture to screen
         gBackgroundTexture.render( 0, 0 );
 
@@ -178,23 +178,25 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
         if (mazeFile.is_open()){
                 while (mazeFile.get (piece)){
                         if (piece == '1'){
-                            gBlockTexture.render(0+x*25, 40+25*y);
-              			marblecollisionX.push_back(0+x*25);
-				marblecollisionY.push_back(40+25*y);
-					        
+                            gBlockTexture.render(0+x*20, 40+20*y);
+              			marblecollisionX.push_back(0+x*20);
+				marblecollisionY.push_back(40+20*y);
 				
 			}
               
 		       	if (piece == 'o'){
-                            gTargetTexture.render(0+x*25, 40+25*y);
+                            gTargetTexture.render(0+x*20, 40+20*y);
                        	}
 			if (piece == 's'){
-				startx.push_back(0+x*25);				
-				starty.push_back(40+25*y);
+				startx.push_back(0+x*20);				
+				starty.push_back(40+20*y);
+				marbleType.push_back(1); //player marble
+				
 			}
 			if (piece == 'e'){
-				startx.push_back(0+x*25);				
-				starty.push_back(40+25*y);
+				startx.push_back(0+x*20);				
+				starty.push_back(40+20*y);
+				marbleType.push_back(0); //enemy marble
 			}
 			
                         if (piece == '\n'){
@@ -216,11 +218,12 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
 int main( int argc, char* args[] )
 {
 
-	vector<int> marblecollisionX;
-	vector<int> marblecollisionY;
+	vector<int> marblecollisionX; //wall x
+	vector<int> marblecollisionY; //wall y
 
-	vector<int> startx;
-	vector<int> starty;
+	vector<int> startx; //vector of marble start x
+	vector<int> starty; //vector of marble start y
+	vector<int> marbleType; //vector of marble types (correlates with startx starty)
 
 	//Start up SDL and create window
 	if( !init() )
@@ -242,14 +245,14 @@ int main( int argc, char* args[] )
 			//Event handler
 			SDL_Event e;
 
-			renderMap(marblecollisionX, marblecollisionY, startx,starty);
+			renderMap(marblecollisionX, marblecollisionY, startx,starty,marbleType);
 
 			//The dot that will be moving around on the screen
-			Dot dot(startx[0],starty[0]);
+			Dot dot(startx[0],starty[0],marbleType[0]);
 
 			//The dot that will be moving around on the screen
 
-			Dot marble(startx[1], starty[1]);
+			Dot marble(startx[1], starty[1],marbleType[1]);
 
 			//While application is running
 			while( !quit )
@@ -284,7 +287,7 @@ int main( int argc, char* args[] )
 				marble.render();
 				
 				//render Map
-				renderMap(marblecollisionX, marblecollisionY, startx, starty);
+				renderMap(marblecollisionX, marblecollisionY, startx, starty, marbleType);
 	
 				//Update screen
 				SDL_RenderPresent( gRenderer );
