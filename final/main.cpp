@@ -178,23 +178,23 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
         if (mazeFile.is_open()){
                 while (mazeFile.get (piece)){
                         if (piece == '1'){
-                            gBlockTexture.render(0+x*25, 40+25*y);
-              			marblecollisionX.push_back(0+x*25);
-				marblecollisionY.push_back(40+25*y);
+                            gBlockTexture.render(0+x*21, 40+21*y);
+              			marblecollisionX.push_back(0+x*21);
+				marblecollisionY.push_back(40+21*y);
 					        
 				
 			}
               
 		       	if (piece == 'o'){
-                            gTargetTexture.render(0+x*25, 40+25*y);
+                            gTargetTexture.render(0+x*21, 40+21*y);
                        	}
 			if (piece == 's'){
-				startx.push_back(0+x*25);				
-				starty.push_back(40+25*y);
+				startx.push_back(0+x*21);				
+				starty.push_back(40+21*y);
 			}
 			if (piece == 'e'){
-				startx.push_back(0+x*25);				
-				starty.push_back(40+25*y);
+				startx.push_back(0+x*21);				
+				starty.push_back(40+21*y);
 			}
 			
                         if (piece == '\n'){
