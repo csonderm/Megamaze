@@ -22,7 +22,6 @@ class Dot
 		static const int DOT_VEL = 1;			//modified this
 
 		//Initializes the variables
-
 		Dot(int = 0, int=0, int = 0);
 
 		//Takes key presses and adjusts the dot's velocity

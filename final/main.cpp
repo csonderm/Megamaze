@@ -166,31 +166,13 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
         if (mazeFile.is_open()){
                 while (mazeFile.get (piece)){
                         if (piece == '1'){
-<<<<<<< HEAD
-                            gBlockTexture.render(0+x*21, 40+21*y);
-              			marblecollisionX.push_back(0+x*21);
-				marblecollisionY.push_back(40+21*y);
-					        
-=======
                             gBlockTexture.render(0+x*20, 40+20*y);
               			marblecollisionX.push_back(0+x*20);
 				marblecollisionY.push_back(40+20*y);
->>>>>>> ab849c9d58af7e9466fe0e847e108f71469c7ea7
 				
 			}
               
 		       	if (piece == 'o'){
-<<<<<<< HEAD
-                            gTargetTexture.render(0+x*21, 40+21*y);
-                       	}
-			if (piece == 's'){
-				startx.push_back(0+x*21);				
-				starty.push_back(40+21*y);
-			}
-			if (piece == 'e'){
-				startx.push_back(0+x*21);				
-				starty.push_back(40+21*y);
-=======
                             gTargetTexture.render(0+x*20, 40+20*y);
 			    targetx = 0+x*20;
 			    targety = 40+20*y;
@@ -205,7 +187,6 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
 				startx.push_back(0+x*20);				
 				starty.push_back(40+20*y);
 				marbleType.push_back(0); //enemy marble
->>>>>>> ab849c9d58af7e9466fe0e847e108f71469c7ea7
 			}
 			
                         if (piece == '\n'){
