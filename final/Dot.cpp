@@ -25,6 +25,10 @@ extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;
 
 extern LTexture gDotTexture;
+extern const int EXPLOSION_ANIMATION_FRAMES = 5;
+extern SDL_Rect gSpriteClips[EXPLOSION_ANIMATION_FRAMES ];
+extern LTexture gSpriteSheetTexture;
+extern SDL_Renderer* gRenderer;
 
 //Box collision detector
 bool checkCollision( SDL_Rect a, SDL_Rect b );
@@ -134,8 +138,22 @@ void Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<in
 		    exit (EXIT_FAILURE);
 		}
 		else{
+		    //Render current frame
+		    for (int frame = 0; frame < 25; frame++){
+				SDL_Rect* currentClip = &gSpriteClips[ frame/5];
+				gSpriteSheetTexture.render( mPosX, mPosY, currentClip );
+				//Update screen
+				SDL_RenderPresent( gRenderer );
+
+				//Cycle animation
+				if( frame / 5 >= EXPLOSION_ANIMATION_FRAMES )
+				{
+					frame = 0;
+				}
+		    }
 		    mPosY = -999;
 		    (*allMarbles[j]).mPosX = -999;
+		    
 		}
 		
 	}

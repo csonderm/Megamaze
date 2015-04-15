@@ -49,6 +49,10 @@ LTexture gBlockTexture;
 LTexture gBackgroundTexture;
 LTexture gTargetTexture;
 
+const int EXPLOSION_ANIMATION_FRAMES = 5;
+SDL_Rect gSpriteClips[EXPLOSION_ANIMATION_FRAMES ];
+LTexture gSpriteSheetTexture;
+
 #include "Dot.h"
 
 bool init()
@@ -133,6 +137,22 @@ bool loadMedia()
 		success = false;
 	}
 
+	//Load sprite sheet texture
+	if( !gSpriteSheetTexture.loadFromFile( "media/Explosion-Sprite-Sheet.png" ) )
+	{
+		printf( "Failed to load explosion texture!\n" );
+		success = false;
+	}
+	else
+	{
+		//Set sprite clips
+		for(int i=0; i<EXPLOSION_ANIMATION_FRAMES; i++){
+			gSpriteClips[ i ].x = 118*i;
+			gSpriteClips[ i ].y = 0;
+			gSpriteClips[ i ].w = 118;
+			gSpriteClips[ i ].h = 118;
+		}
+	}
 
 	return success;
 }
@@ -141,6 +161,7 @@ void close()
 {
 	//Free loaded images
 	gDotTexture.free();
+	gSpriteSheetTexture.free();
 
 	//Destroy window	
 	SDL_DestroyRenderer( gRenderer );
@@ -239,6 +260,8 @@ int main( int argc, char* args[] )
 			//Event handler
 			SDL_Event e;
 
+			int frame = 0;
+
 			renderMap(marblecollisionX, marblecollisionY, startx,starty,marbleType,targetx,targety);
 
 			for (int i = 0; i < startx.size(); i++){
@@ -308,9 +331,21 @@ int main( int argc, char* args[] )
 				//Render dot
 				marble2.render();
 */	
-				//Update screen
+				//Render current frame
+/*				SDL_Rect* currentClip = &gSpriteClips[ frame/5];
+				gSpriteSheetTexture.render( ( SCREEN_WIDTH - currentClip->w ) / 2, ( SCREEN_HEIGHT - currentClip->h ) / 2, currentClip );
+*/				//Update screen
 				SDL_RenderPresent( gRenderer );
-			}
+
+/*				//Go to next frame
+				++frame;
+
+				//Cycle animation
+				if( frame / 5 >= EXPLOSION_ANIMATION_FRAMES )
+				{
+					frame = 0;
+				}
+*/			}
 
 		}
 	}
