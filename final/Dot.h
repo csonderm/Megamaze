@@ -32,6 +32,7 @@ class Dot
 
 		//Shows the dot on the screen
 		void render();
+		void renderMine();
 
 		//Dot's collision box
 		SDL_Rect mCollider;

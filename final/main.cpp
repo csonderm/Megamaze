@@ -1,7 +1,7 @@
 /*This source code copyrighted by Lazy Foo' Productions (2004-2015)
 and may not be redistributed without written permission.*/
 
-//Using SDL, SDL_image, standard IO, and strings
+//Using SDL, SDL_image, standard IO, and strings	//changed from accelerated to software
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
@@ -53,6 +53,10 @@ const int EXPLOSION_ANIMATION_FRAMES = 5;
 SDL_Rect gSpriteClips[EXPLOSION_ANIMATION_FRAMES ];
 LTexture gSpriteSheetTexture;
 
+const int DOT_FRAMES = 2;
+SDL_Rect g2SpriteClips[DOT_FRAMES];
+LTexture g2SpriteSheetTexture;
+
 #include "Dot.h"
 
 bool init()
@@ -84,7 +88,7 @@ bool init()
 		else
 		{
 			//Create vsynced renderer for window
-			gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC );
+			gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_SOFTWARE);
 			if( gRenderer == NULL )
 			{
 				printf( "Renderer could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -115,10 +119,20 @@ bool loadMedia()
 	bool success = true;
 
 	//Load press texture
-	if( !gDotTexture.loadFromFile( "media/dot.bmp" ) )
+	if( !gDotTexture.loadFromFile( "media/marbles.png" ) )
 	{
 		printf( "Failed to load dot texture!\n" );
 		success = false;
+	}
+	else
+	{
+		//Set sprite clips
+		for(int i=0; i<DOT_FRAMES; i++){
+			g2SpriteClips[ i ].x = 20*i;
+			g2SpriteClips[ i ].y = 0;
+			g2SpriteClips[ i ].w = 20;
+			g2SpriteClips[ i ].h = 20;
+		}
 	}
 
 	//Load Foo' texture
@@ -162,6 +176,7 @@ void close()
 	//Free loaded images
 	gDotTexture.free();
 	gSpriteSheetTexture.free();
+	
 
 	//Destroy window	
 	SDL_DestroyRenderer( gRenderer );
@@ -183,7 +198,7 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
         ifstream mazeFile("levels/lvl1.txt");
         int x = 0;
         int y = 0;
-	
+	int type;
         if (mazeFile.is_open()){
                 while (mazeFile.get (piece)){
                         if (piece == '1'){
@@ -201,13 +216,15 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
 			if (piece == 's'){
 				startx.push_back(0+x*20);				
 				starty.push_back(40+20*y);
-				marbleType.push_back(1); //player marble
+				type=1;
+				marbleType.push_back(type); //player marble
 				
 			}
 			if (piece == 'e'){
 				startx.push_back(0+x*20);				
 				starty.push_back(40+20*y);
-				marbleType.push_back(0); //enemy marble
+				type=0;
+				marbleType.push_back(type); //enemy marble
 			}
 			
                         if (piece == '\n'){
@@ -228,7 +245,7 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
 
 int main( int argc, char* args[] )
 {
-
+		
 	vector<Dot*> allMarbles;
 
 	vector<int> marblecollisionX; //wall x
@@ -316,10 +333,16 @@ int main( int argc, char* args[] )
 				startx.clear();
 				starty.clear();
 				//render Map
-				renderMap(marblecollisionX, marblecollisionY, startx, starty, marbleType,targetx,targety);
 				
+				renderMap(marblecollisionX, marblecollisionY, startx, starty, marbleType,targetx,targety);
+
 				for (int i = 0; i < allMarbles.size(); i++){
-				     allMarbles[i]->render();
+					if ( marbleType[i]== 1) {
+						allMarbles[i]->renderMine();
+					}
+					else if ( marbleType[i] == 0 ){
+				     		allMarbles[i]->render();
+					}
 				}
 				
 /*				//Render dot

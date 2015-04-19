@@ -25,10 +25,13 @@ extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;
 
 extern LTexture gDotTexture;
+extern const int DOT_FRAMES=2;
+extern SDL_Rect g2SpriteClips[DOT_FRAMES];
 extern const int EXPLOSION_ANIMATION_FRAMES = 5;
 extern SDL_Rect gSpriteClips[EXPLOSION_ANIMATION_FRAMES ];
 extern LTexture gSpriteSheetTexture;
 extern SDL_Renderer* gRenderer;
+
 
 //Box collision detector
 bool checkCollision( SDL_Rect a, SDL_Rect b );
@@ -167,7 +170,7 @@ void Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<in
 	targetCollider.w = 20;
 	if (checkCollision(mCollider, targetCollider)){
 		if (player == 0){
-		    cout << "Marble deleted" << endl;
+		    mPosY = -999;
 		}
 		else{
 		    cout << "YOU WIN!!!!!!!" << endl;
@@ -184,11 +187,15 @@ void Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<in
 void Dot::render()
 {
     //Show the dot
-	gDotTexture.render( mPosX, mPosY );
+	gDotTexture.render( mPosX, mPosY, &g2SpriteClips[1]);
 }
 
+void Dot::renderMine()
+{
+	//Show my dot
+	gDotTexture.render( mPosX, mPosY, &g2SpriteClips[0]);
 
-
+}
 
 
 bool checkCollision( SDL_Rect a, SDL_Rect b )
