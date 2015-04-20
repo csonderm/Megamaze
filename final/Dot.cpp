@@ -133,9 +133,9 @@ int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int
         mPosY -= mVelY;
 	mCollider.y = mPosY;
     }
-
     for (int j = 0; j < allMarbles.size(); j++){
 	if (checkCollision(mCollider, (*allMarbles[j]).mCollider)&&(this != allMarbles[j])){
+		cout << "MADE IT HERE 2!" << endl;
 		if (player == 1){		
 		    cout << "YOU LOSE!!!!!!!" << endl;
 		    return 0;

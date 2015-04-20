@@ -326,15 +326,15 @@ int play(string lvl)
 
 			int frame = 0;
 	
-			cout<<"error 1"<<endl;
+			
 			//play game
 			renderMap(marblecollisionX, marblecollisionY, startx,starty,marbleType,targetx,targety, lvl);
-			cout<<"error 2"<<endl;			
+					
 			for (int i = 0; i < startx.size(); i++){
 			    Dot* marble = new Dot(startx[i], starty[i], marbleType[i]);
 			    allMarbles.push_back(marble);
 			}
-			cout<<"error 3"<<endl;
+			
 			//While application is running
 			while( !quit )
 			{
@@ -354,21 +354,21 @@ int play(string lvl)
 
 					}
 				}
-			cout<<"error 4"<<endl;
+			
 
 				//Move the dot and check collision
 				for (int i = 0; i < allMarbles.size(); i++){
 				     int win=allMarbles[i]->move(allMarbles, marblecollisionX, marblecollisionY, targetx, targety );
 				     if (win==1){
-					cout<<"1"<<endl;
+					return 1;
 				     }
 				     else if (win==0){
-					cout<<" 0"<<endl;
+					return 0;
 				     }	
 				     else{
 				     }
 				}
-			cout<<"error 5"<<endl;
+			
 
 				//if(!win) break;
 				//Clear screen
