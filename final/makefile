@@ -10,4 +10,4 @@ LTexture.o: LTexture.cpp LTexture.h
 	g++ -c LTexture.cpp
 
 clean:
-	rm -r *.o main
+	rm -r *.o main 

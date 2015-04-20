@@ -2,7 +2,7 @@
    Fund II
    LTexture interface and implementation.
 */
-
+ 
 #ifndef LTexture_H
 #define LTexture_H
 

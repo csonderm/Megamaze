@@ -1,7 +1,7 @@
 /* Megamaze
    Fund II
    Dot interface
-*/
+*/ 
 #ifndef DOT_H
 #define DOT_H
 
