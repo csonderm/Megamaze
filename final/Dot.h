@@ -28,7 +28,7 @@ class Dot
 		void handleEvent( SDL_Event& e );
 
 		//Moves the dot and checks collision
-		void move( vector<Dot*>, vector<int> , vector<int> , int, int );
+		int move( vector<Dot*>, vector<int> , vector<int> , int, int );
 
 		//Shows the dot on the screen
 		void render();

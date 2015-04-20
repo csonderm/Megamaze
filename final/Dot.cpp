@@ -81,7 +81,7 @@ void Dot::handleEvent( SDL_Event& e )
     }
 }
 
-void Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int> marblecollisionY, int targetx, int targety )
+int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int> marblecollisionY, int targetx, int targety )
 {
     //Move the dot left or right
     mPosX += mVelX;
@@ -138,7 +138,7 @@ void Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<in
 	if (checkCollision(mCollider, (*allMarbles[j]).mCollider)&&(this != allMarbles[j])){
 		if (player == 1){		
 		    cout << "YOU LOSE!!!!!!!" << endl;
-		    exit (EXIT_FAILURE);
+		    return 0;
 		}
 		else{
 		    //Render current frame
@@ -154,7 +154,12 @@ void Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<in
 					frame = 0;
 				}
 		    }
+			
+
+			//allMarbles.erase(allMarbles.begin()+j);
+			//delete allMarbles[j];	
 		    mPosY = -999;
+		    
 		    (*allMarbles[j]).mPosX = -999;
 		    
 		}
@@ -171,16 +176,18 @@ void Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<in
 	if (checkCollision(mCollider, targetCollider)){
 		if (player == 0){
 		    mPosY = -999;
+		
+
 		}
 		else{
 		    cout << "YOU WIN!!!!!!!" << endl;
-		    exit (EXIT_FAILURE);
+		 	return 1;
 		}
 		
 		
 	}
 
-
+	return -1;
 
 }
 

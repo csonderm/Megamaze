@@ -1,7 +1,9 @@
 /*This source code copyrighted by Lazy Foo' Productions (2004-2015)
 and may not be redistributed without written permission.*/
- 
-//Using SDL, SDL_image, standard IO, and strings	//changed from accelerated to software
+
+//April 19, 2015 got start screen and when clicked anywhere, move into game
+//need to fix click location  
+//Using SDL, SDL_image, standard IO, and strings	
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
@@ -40,7 +42,13 @@ void close();
 
 
 //render map
-void renderMap(vector<int> & , vector<int> &, vector<int> &, vector<int> &, vector<int> & marbleType, int & targetx, int & targety);
+void renderMap(vector<int> & , vector<int> &, vector<int> &, vector<int> &, vector<int> & marbleType, int & targetx, int & targety, string);
+
+//play game function
+int play(string);
+
+//start screen function
+int start();
 
 
 //Scene textures
@@ -48,6 +56,7 @@ LTexture gDotTexture;
 LTexture gBlockTexture;
 LTexture gBackgroundTexture;
 LTexture gTargetTexture;
+LTexture gStartTexture;
 
 const int EXPLOSION_ANIMATION_FRAMES = 5;
 SDL_Rect gSpriteClips[EXPLOSION_ANIMATION_FRAMES ];
@@ -57,7 +66,12 @@ const int DOT_FRAMES = 2;
 SDL_Rect g2SpriteClips[DOT_FRAMES];
 LTexture g2SpriteSheetTexture;
 
+#include "LButton.h"
+//Buttons objects
+LButton gButtons[ TOTAL_BUTTONS ]; 
+
 #include "Dot.h"
+
 
 bool init()
 {
@@ -118,12 +132,15 @@ bool loadMedia()
 	//Loading success flag
 	bool success = true;
 
+
+
 	//Load press texture
 	if( !gDotTexture.loadFromFile( "media/marbles.png" ) )
 	{
 		printf( "Failed to load dot texture!\n" );
 		success = false;
 	}
+
 	else
 	{
 		//Set sprite clips
@@ -151,6 +168,19 @@ bool loadMedia()
 		success = false;
 	}
 
+	if( !gStartTexture.loadFromFile( "media/StartPage.bmp" ) )
+	{
+		printf( "Failed to load Start Page!\n" );
+		success = false;
+	}
+	else{
+		//Set buttons in corners
+		gButtons[ 0 ].setPosition( 292, 336);
+	//	gButtons[ 1 ].setPosition(0, 0 );
+	//	gButtons[ 2 ].setPosition( 0,0 );
+	//	gButtons[ 3 ].setPosition( 292, 336);
+	}
+
 	//Load sprite sheet texture
 	if( !gSpriteSheetTexture.loadFromFile( "media/Explosion-Sprite-Sheet.png" ) )
 	{
@@ -176,7 +206,9 @@ void close()
 	//Free loaded images
 	gDotTexture.free();
 	gSpriteSheetTexture.free();
-	
+	gStartTexture.free();
+	gBlockTexture.free();
+	gTargetTexture.free();
 
 	//Destroy window	
 	SDL_DestroyRenderer( gRenderer );
@@ -191,11 +223,11 @@ void close()
 
 
 
-void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, vector<int> & startx, vector<int> & starty, vector<int> & marbleType, int & targetx, int & targety){
+void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, vector<int> & startx, vector<int> & starty, vector<int> & marbleType, int & targetx, int & targety, string lvl){
 
         //Rendering map from text file
         char piece;
-        ifstream mazeFile("levels/lvl1.txt");
+        ifstream mazeFile(lvl.c_str());
         int x = 0;
         int y = 0;
 	int type;
@@ -239,13 +271,42 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
         else cout << "Unable to open file";
 }
 
-
-
-
-
-int main( int argc, char* args[] )
+int start()
 {
-		
+	SDL_Event e;
+	bool quit=false;
+	int click;
+	//start page with play button	
+	cout << "Made it here 2" << endl;		
+	while( !quit )
+	{
+		gStartTexture.render(0,0);
+		SDL_RenderPresent( gRenderer );
+		//Handle events on queue
+		while( SDL_PollEvent( &e ) != 0 )
+		{
+			//User requests quit
+			if( e.type == SDL_QUIT )
+			{
+				quit = true;
+			}
+			for( int i = 0; i < TOTAL_BUTTONS; ++i )
+			{	
+				if(gButtons[ i ].handleEvent( &e )){
+					click=1;
+					quit=true;
+				}
+			}						
+		}
+				
+	}
+	cout << "Made it here 3" << endl;
+	return click;		
+
+}
+
+int play(string lvl)
+{
 	vector<Dot*> allMarbles;
 
 	vector<int> marblecollisionX; //wall x
@@ -257,6 +318,96 @@ int main( int argc, char* args[] )
 
 	int targetx;
 	int targety;
+			//Main loop flag
+			bool quit = false;
+
+			//Event handler
+			SDL_Event e;
+
+			int frame = 0;
+	
+			cout<<"error 1"<<endl;
+			//play game
+			renderMap(marblecollisionX, marblecollisionY, startx,starty,marbleType,targetx,targety, lvl);
+			cout<<"error 2"<<endl;			
+			for (int i = 0; i < startx.size(); i++){
+			    Dot* marble = new Dot(startx[i], starty[i], marbleType[i]);
+			    allMarbles.push_back(marble);
+			}
+			cout<<"error 3"<<endl;
+			//While application is running
+			while( !quit )
+			{
+				//Handle events on queue
+				while( SDL_PollEvent( &e ) != 0 )
+				{
+					//User requests quit
+					if( e.type == SDL_QUIT )
+					{
+						return -1;
+					}
+
+
+					//Handle input for the dot
+					for (int i = 0; i < allMarbles.size(); i++){
+					    allMarbles[i]->handleEvent(e);
+
+					}
+				}
+			cout<<"error 4"<<endl;
+
+				//Move the dot and check collision
+				for (int i = 0; i < allMarbles.size(); i++){
+				     int win=allMarbles[i]->move(allMarbles, marblecollisionX, marblecollisionY, targetx, targety );
+				     if (win==1){
+					cout<<"1"<<endl;
+				     }
+				     else if (win==0){
+					cout<<" 0"<<endl;
+				     }	
+				     else{
+				     }
+				}
+			cout<<"error 5"<<endl;
+
+				//if(!win) break;
+				//Clear screen
+				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+				SDL_RenderClear( gRenderer );
+				marblecollisionX.clear();
+				marblecollisionY.clear();
+				marbleType.clear();
+				startx.clear();
+				starty.clear();
+				//render Map
+				
+				renderMap(marblecollisionX, marblecollisionY, startx, starty, marbleType,targetx,targety, lvl);
+
+				for (int i = 0; i < allMarbles.size(); i++){
+					if ( marbleType[i]== 1) {
+						allMarbles[i]->renderMine();
+					}
+					else if ( marbleType[i] == 0 ){
+				     		allMarbles[i]->render();
+					}
+				}
+				
+				//Update screen
+				SDL_RenderPresent( gRenderer );
+
+			}
+}
+
+
+
+
+int main( int argc, char* args[] )
+{
+	vector<string> lvlFiles;
+	lvlFiles.push_back("levels/lvl1.txt");
+	lvlFiles.push_back("levels/lvl2.txt");
+	int lvl=0;
+	int complete;
 	//Start up SDL and create window
 	if( !init() )
 	{
@@ -270,106 +421,22 @@ int main( int argc, char* args[] )
 			printf( "Failed to load media!\n" );
 		}
 		else
-		{	
-			//Main loop flag
-			bool quit = false;
-
-			//Event handler
-			SDL_Event e;
-
-			int frame = 0;
-
-			renderMap(marblecollisionX, marblecollisionY, startx,starty,marbleType,targetx,targety);
-
-			for (int i = 0; i < startx.size(); i++){
-			    Dot* marble = new Dot(startx[i], starty[i], marbleType[i]);
-			    allMarbles.push_back(marble);
-			}
-
-/*			//The dot that will be moving around on the screen
-			Dot dot(startx[0],starty[0],marbleType[0]);
-
-			//The dot that will be moving around on the screen
-
-			Dot marble(startx[1], starty[1],marbleType[1]);
-			Dot marble2(startx[2], starty[2],marbleType[2]);
-*/
-			//While application is running
-			while( !quit )
-			{
-				//Handle events on queue
-				while( SDL_PollEvent( &e ) != 0 )
-				{
-					//User requests quit
-					if( e.type == SDL_QUIT )
-					{
-						quit = true;
-					}
-
-					//Handle input for the dot
-					for (int i = 0; i < allMarbles.size(); i++){
-					    allMarbles[i]->handleEvent(e);
-
-					}
-/*					dot.handleEvent( e );
-					marble.handleEvent( e );
-					marble2.handleEvent( e );
-*/				}
-
-				//Move the dot and check collision
-				for (int i = 0; i < allMarbles.size(); i++){
-				     allMarbles[i]->move(allMarbles, marblecollisionX, marblecollisionY, targetx, targety );
+		{
+			//start page
+			int startgame=start();
+			cout << "Made it here" << endl;
+			while(lvl!=lvlFiles.size()){
+				complete = play(lvlFiles[lvl]);
+				if (complete==0){
 				}
-
-/*				dot.move( marble, marblecollisionX,  marblecollisionY, targetx, targety );
-				marble.move( dot,marblecollisionX,  marblecollisionY, targetx, targety);
-				marble2.move ( marble,marblecollisionX,  marblecollisionY, targetx, targety);
-*/				//Clear screen
-				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
-				SDL_RenderClear( gRenderer );
-				marblecollisionX.clear();
-				marblecollisionY.clear();
-				marbleType.clear();
-				startx.clear();
-				starty.clear();
-				//render Map
-				
-				renderMap(marblecollisionX, marblecollisionY, startx, starty, marbleType,targetx,targety);
-
-				for (int i = 0; i < allMarbles.size(); i++){
-					if ( marbleType[i]== 1) {
-						allMarbles[i]->renderMine();
-					}
-					else if ( marbleType[i] == 0 ){
-				     		allMarbles[i]->render();
-					}
+				else if (complete == 1){
+					lvl++;				
 				}
-				
-/*				//Render dot
-				dot.render();
+				else if (complete == -1){
+					return SDL_QUIT;
 
-				//Render dot
-				marble.render();
-				
-				//Render dot
-				marble2.render();
-*/	
-				//Render current frame
-/*				SDL_Rect* currentClip = &gSpriteClips[ frame/5];
-				gSpriteSheetTexture.render( ( SCREEN_WIDTH - currentClip->w ) / 2, ( SCREEN_HEIGHT - currentClip->h ) / 2, currentClip );
-*/				//Update screen
-				SDL_RenderPresent( gRenderer );
-
-/*				//Go to next frame
-				++frame;
-
-				//Cycle animation
-				if( frame / 5 >= EXPLOSION_ANIMATION_FRAMES )
-				{
-					frame = 0;
 				}
-*/			}
-
+			}		
 		}
 	}
 
