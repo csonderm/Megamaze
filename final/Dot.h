@@ -24,6 +24,7 @@ class Dot
 		//Initializes the variables
 		Dot(int = 0, int=0, int = 0);
 
+
 		//Takes key presses and adjusts the dot's velocity
 		void handleEvent( SDL_Event& e );
 
@@ -39,6 +40,11 @@ class Dot
 
 		//The X and Y offsets of the dot
 		int mPosX, mPosY;
+		
+		bool getAlive();
+		void setAlive(bool);
+		int getPlayer();
+		void setVelocity(int x,int y);
 
     private:
 		
@@ -47,6 +53,8 @@ class Dot
 		int mVelX, mVelY;
 
 		int player;
+
+		bool alive;
 		
 		
 };

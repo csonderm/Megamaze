@@ -51,6 +51,25 @@ Dot::Dot(int x, int y, int type)
     mVelY = 0;
 
     player = type;
+	alive = true;
+}
+
+bool Dot::getAlive(){
+	return alive;
+}
+
+void Dot::setAlive(bool a){
+	alive = a;
+}
+
+int Dot::getPlayer(){
+	return player;
+}
+
+
+void Dot::setVelocity(int x,int y){
+	mVelX = x;
+	mVelY = y;
 }
 
 void Dot::handleEvent( SDL_Event& e )
@@ -83,15 +102,18 @@ void Dot::handleEvent( SDL_Event& e )
 
 int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int> marblecollisionY, int targetx, int targety )
 {
+	
     //Move the dot left or right
     mPosX += mVelX;
 	mCollider.x = mPosX;
+
 
  
 	//Move the dot up or down
     	mPosY += mVelY;
 	mCollider.y = mPosY;
 
+	
 	int n = marblecollisionX.size();
 
 	for( int i = 0; i < n; i++){
@@ -117,6 +139,7 @@ int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int
 		}
 	}
 
+	
    //If the dot collided or went too far to the left or right
 	if( ( mPosX < 0 ) || ( mPosX + DOT_WIDTH > SCREEN_WIDTH ) )
     {
@@ -133,41 +156,74 @@ int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int
         mPosY -= mVelY;
 	mCollider.y = mPosY;
     }
+
+
+	vector<Dot *> tempVec;
+
+
+
     for (int j = 0; j < allMarbles.size(); j++){
-	if (checkCollision(mCollider, (*allMarbles[j]).mCollider)&&(this != allMarbles[j])){
-		cout << "MADE IT HERE 2!" << endl;
-		if (player == 1){		
+	if (checkCollision(mCollider, (*allMarbles[j]).mCollider)&&(this != allMarbles[j])&&((*this).getAlive()==true)&&((*allMarbles[j]).getAlive()==true)){
+		//cout << "MADE IT HERE 2!" << endl;
+		if (player == 1 || (*allMarbles[j]).getPlayer()==1){		
 		    cout << "YOU LOSE!!!!!!!" << endl;
+					
 		    return 0;
+		
 		}
 		else{
 		    //Render current frame
+		
 		    for (int frame = 0; frame < 25; frame++){
+				
 				SDL_Rect* currentClip = &gSpriteClips[ frame/5];
-				gSpriteSheetTexture.render( mPosX, mPosY, currentClip );
+				gSpriteSheetTexture.render( mPosX, mPosY, currentClip );			
 				//Update screen
 				SDL_RenderPresent( gRenderer );
-
 				//Cycle animation
 				if( frame / 5 >= EXPLOSION_ANIMATION_FRAMES )
 				{
 					frame = 0;
 				}
 		    }
-			
+	
 
-			//allMarbles.erase(allMarbles.begin()+j);
-			//delete allMarbles[j];	
-		    mPosY = -999;
+		   	alive = false; 
+			(*allMarbles[j]).setAlive(false);
+		    //allMarbles.erase(allMarbles.begin()+j);
 		    
-		    (*allMarbles[j]).mPosX = -999;
+		    //delete temp;	
+
+			
+		    //mPosY = -999;
+		    
+		    //(*allMarbles[j]).mPosX = -999;
 		    
 		}
 		
+		
+			
 	}
+
+
+	
     }
 
+/*    for(vector<Dot*>::iterator k = tempVec.begin(); k!=tempVec.end(); k++)
+    {
+	delete *k;
+    }
 
+		
+    for(vector<Dot*>::iterator k = allMarbles.begin(); k!=allMarbles.end(); k++)
+    {
+	if(*k == NULL){
+		allMarbles.erase(k);
+		k = allMarbles.begin();
+	}     
+    }
+
+*/
 	SDL_Rect targetCollider;
 	targetCollider.x = targetx;
 	targetCollider.y = targety;

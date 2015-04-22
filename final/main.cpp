@@ -225,6 +225,13 @@ void close()
 
 void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, vector<int> & startx, vector<int> & starty, vector<int> & marbleType, int & targetx, int & targety, string lvl){
 
+
+	marblecollisionX.clear();
+	marblecollisionY.clear();
+	startx.clear();
+	starty.clear();
+	marbleType.clear();
+
         //Rendering map from text file
         char piece;
         ifstream mazeFile(lvl.c_str());
@@ -277,7 +284,7 @@ int start()
 	bool quit=false;
 	int click;
 	//start page with play button	
-	cout << "Made it here 2" << endl;		
+	//cout << "Made it here 2" << endl;		
 	while( !quit )
 	{
 		gStartTexture.render(0,0);
@@ -300,7 +307,7 @@ int start()
 		}
 				
 	}
-	cout << "Made it here 3" << endl;
+	//cout << "Made it here 3" << endl;
 	return click;		
 
 }
@@ -318,6 +325,7 @@ int play(string lvl)
 
 	int targetx;
 	int targety;
+	
 			//Main loop flag
 			bool quit = false;
 
@@ -333,6 +341,7 @@ int play(string lvl)
 			for (int i = 0; i < startx.size(); i++){
 			    Dot* marble = new Dot(startx[i], starty[i], marbleType[i]);
 			    allMarbles.push_back(marble);
+				(*allMarbles[i]).setVelocity(0,0);		
 			}
 			
 			//While application is running
@@ -360,9 +369,20 @@ int play(string lvl)
 				for (int i = 0; i < allMarbles.size(); i++){
 				     int win=allMarbles[i]->move(allMarbles, marblecollisionX, marblecollisionY, targetx, targety );
 				     if (win==1){
+					int size = allMarbles.size();
+					for(int i = 0; i < size; i++){
+						(*allMarbles[i]).setVelocity(0,0);
+						delete allMarbles[i];
+					}
+					
 					return 1;
 				     }
 				     else if (win==0){
+					int size = allMarbles.size();
+					for(int i = 0; i < size; i++){
+						(*allMarbles[i]).setVelocity(0,0);
+						delete allMarbles[i];
+					}
 					return 0;
 				     }	
 				     else{
@@ -384,10 +404,10 @@ int play(string lvl)
 				renderMap(marblecollisionX, marblecollisionY, startx, starty, marbleType,targetx,targety, lvl);
 
 				for (int i = 0; i < allMarbles.size(); i++){
-					if ( marbleType[i]== 1) {
+					if ( marbleType[i]== 1 ) {
 						allMarbles[i]->renderMine();
 					}
-					else if ( marbleType[i] == 0 ){
+					else if ( marbleType[i] == 0 && (*allMarbles[i]).getAlive()==true ){
 				     		allMarbles[i]->render();
 					}
 				}
@@ -424,10 +444,11 @@ int main( int argc, char* args[] )
 		{
 			//start page
 			int startgame=start();
-			cout << "Made it here" << endl;
+			//cout << "Made it here" << endl;
 			while(lvl!=lvlFiles.size()){
 				complete = play(lvlFiles[lvl]);
 				if (complete==0){
+
 				}
 				else if (complete == 1){
 					lvl++;				
