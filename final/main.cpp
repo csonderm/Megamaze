@@ -191,10 +191,10 @@ bool loadMedia()
 	{
 		//Set sprite clips
 		for(int i=0; i<EXPLOSION_ANIMATION_FRAMES; i++){
-			gSpriteClips[ i ].x = 118*i;
+			gSpriteClips[ i ].x = 60*i;
 			gSpriteClips[ i ].y = 0;
-			gSpriteClips[ i ].w = 118;
-			gSpriteClips[ i ].h = 118;
+			gSpriteClips[ i ].w = 60;
+			gSpriteClips[ i ].h = 60;
 		}
 	}
 
@@ -241,27 +241,27 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
         if (mazeFile.is_open()){
                 while (mazeFile.get (piece)){
                         if (piece == '1'){
-                            gBlockTexture.render(0+x*20, 40+20*y);
-              			marblecollisionX.push_back(0+x*20);
-				marblecollisionY.push_back(40+20*y);
+                            gBlockTexture.render(0+x*21, 40+21*y);
+              			marblecollisionX.push_back(0+x*21);
+				marblecollisionY.push_back(40+21*y);
 				
 			}
-              
+
 		       	if (piece == 'o'){
-                            gTargetTexture.render(0+x*20, 40+20*y);
-			    targetx = 0+x*20;
-			    targety = 40+20*y;
+                            gTargetTexture.render(0+x*21, 40+21*y);
+			    targetx = 0+x*21;
+			    targety = 40+21*y;
                        	}
 			if (piece == 's'){
-				startx.push_back(0+x*20);				
-				starty.push_back(40+20*y);
+				startx.push_back(0+x*21);				
+				starty.push_back(40+21*y);
 				type=1;
 				marbleType.push_back(type); //player marble
 				
 			}
 			if (piece == 'e'){
-				startx.push_back(0+x*20);				
-				starty.push_back(40+20*y);
+				startx.push_back(0+x*21);				
+				starty.push_back(40+21*y);
 				type=0;
 				marbleType.push_back(type); //enemy marble
 			}
@@ -427,6 +427,7 @@ int main( int argc, char* args[] )
 	vector<string> lvlFiles;
 	lvlFiles.push_back("levels/lvl1.txt");
 	lvlFiles.push_back("levels/lvl2.txt");
+	lvlFiles.push_back("levels/lvl3.txt");
 	int lvl=0;
 	int complete;
 	//Start up SDL and create window
@@ -465,6 +466,7 @@ int main( int argc, char* args[] )
 
 				}
 				else if (complete == 1){
+					int startgame=start();
 					lvl++;				
 				}
 				else if (complete == -1){
