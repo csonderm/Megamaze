@@ -246,7 +246,7 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
 				marblecollisionY.push_back(40+21*y);
 				
 			}
-
+              
 		       	if (piece == 'o'){
                             gTargetTexture.render(0+x*21, 40+21*y);
 			    targetx = 0+x*21;
