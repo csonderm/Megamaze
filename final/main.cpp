@@ -45,10 +45,10 @@ void close();
 void renderMap(vector<int> & , vector<int> &, vector<int> &, vector<int> &, vector<int> & marbleType, int & targetx, int & targety, string);
 
 //play game function
-int play(string);
+int play(string, int *);
 
 //start screen function
-int start();
+void start();
 
 
 //Scene textures
@@ -278,8 +278,9 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
         else cout << "Unable to open file";
 }
 
-int start()
+void start(int *game_state)
 {
+	cout << *game_state << endl;
 	SDL_Event e;
 	bool quit=false;
 	int click;
@@ -300,19 +301,21 @@ int start()
 			for( int i = 0; i < TOTAL_BUTTONS; ++i )
 			{	
 				if(gButtons[ i ].handleEvent( &e )){
+					*game_state=1;
 					click=1;
-					quit=true;
+					cout << *game_state << endl;
+					quit = true;
 				}
 			}						
 		}
 				
 	}
 	//cout << "Made it here 3" << endl;
-	return click;		
+	//return click;		
 
 }
 
-int play(string lvl)
+int play(string lvl, int *game_state)
 {
 	vector<Dot*> allMarbles;
 
@@ -341,21 +344,26 @@ int play(string lvl)
 			for (int i = 0; i < startx.size(); i++){
 			    Dot* marble = new Dot(startx[i], starty[i], marbleType[i]);
 			    allMarbles.push_back(marble);
-				(*allMarbles[i]).setVelocity(0,0);		
+			
 			}
 			
 			//While application is running
 			while( !quit )
 			{
+
+
+				
+
 				//Handle events on queue
 				while( SDL_PollEvent( &e ) != 0 )
 				{
 					//User requests quit
 					if( e.type == SDL_QUIT )
 					{
+						*game_state = 2;
 						return -1;
 					}
-
+					
 
 					//Handle input for the dot
 					for (int i = 0; i < allMarbles.size(); i++){
@@ -369,27 +377,19 @@ int play(string lvl)
 				for (int i = 0; i < allMarbles.size(); i++){
 				     int win=allMarbles[i]->move(allMarbles, marblecollisionX, marblecollisionY, targetx, targety );
 				     if (win==1){
-					int size = allMarbles.size();
-					for(int i = 0; i < size; i++){
-						(*allMarbles[i]).setVelocity(0,0);
-						delete allMarbles[i];
-					}
+					*game_state=0;	
 					
 					return 1;
 				     }
 				     else if (win==0){
-					int size = allMarbles.size();
-					for(int i = 0; i < size; i++){
-						(*allMarbles[i]).setVelocity(0,0);
-						delete allMarbles[i];
-					}
+					*game_state = 0;
 					return 0;
 				     }	
 				     else{
 				     }
 				}
 			
-
+				cout << *game_state << endl;
 				//if(!win) break;
 				//Clear screen
 				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
@@ -423,6 +423,7 @@ int play(string lvl)
 
 int main( int argc, char* args[] )
 {
+	
 	vector<string> lvlFiles;
 	lvlFiles.push_back("levels/lvl1.txt");
 	lvlFiles.push_back("levels/lvl2.txt");
@@ -441,10 +442,23 @@ int main( int argc, char* args[] )
 			printf( "Failed to load media!\n" );
 		}
 		else
-		{
-			//start page
-			int startgame=start();
-			//cout << "Made it here" << endl;
+		{	
+			int game_state = 0;
+			bool playing = true;
+			while(playing){
+				 
+				switch(game_state){
+					case 0: start(&game_state);			//start the game
+						break; 	
+					case 1: play(lvlFiles[0], &game_state);
+						break;
+					case 2: play(lvlFiles[1], &game_state);
+						break;
+					case 3: playing=false;
+						break;
+				}
+			}
+/*
 			while(lvl!=lvlFiles.size()){
 				complete = play(lvlFiles[lvl]);
 				if (complete==0){
@@ -458,6 +472,8 @@ int main( int argc, char* args[] )
 
 				}
 			}		
+
+*/
 		}
 	}
 

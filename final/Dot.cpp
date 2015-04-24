@@ -77,6 +77,7 @@ void Dot::handleEvent( SDL_Event& e )
     //If a key was pressed
 	if( e.type == SDL_KEYDOWN && e.key.repeat == 0 )
     {
+	
         //Adjust the velocity
         switch( e.key.keysym.sym )
         {
@@ -89,6 +90,7 @@ void Dot::handleEvent( SDL_Event& e )
     //If a key was released
     else if( e.type == SDL_KEYUP && e.key.repeat == 0 )
     {
+
         //Adjust the velocity
         switch( e.key.keysym.sym )
         {
@@ -113,7 +115,7 @@ int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int
     	mPosY += mVelY;
 	mCollider.y = mPosY;
 
-	
+	//cout << "Vx: " << mVelX << " Vy: " << mVelY << endl;
 	int n = marblecollisionX.size();
 
 	for( int i = 0; i < n; i++){
@@ -209,21 +211,7 @@ int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int
 	
     }
 
-/*    for(vector<Dot*>::iterator k = tempVec.begin(); k!=tempVec.end(); k++)
-    {
-	delete *k;
-    }
 
-		
-    for(vector<Dot*>::iterator k = allMarbles.begin(); k!=allMarbles.end(); k++)
-    {
-	if(*k == NULL){
-		allMarbles.erase(k);
-		k = allMarbles.begin();
-	}     
-    }
-
-*/
 	SDL_Rect targetCollider;
 	targetCollider.x = targetx;
 	targetCollider.y = targety;
