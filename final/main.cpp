@@ -48,7 +48,6 @@ void renderMap(vector<int> & , vector<int> &, vector<int> &, vector<int> &, vect
 int play(string, int *);
 
 //start screen function
-void start();
 
 
 //Scene textures
@@ -278,15 +277,15 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
         else cout << "Unable to open file";
 }
 
-void start(int *game_state)
+int start(int *game_state)
 {
-	cout << *game_state << endl;
+	
 	SDL_Event e;
-	bool quit=false;
-	int click;
+	int quit = 0;
+	int click = 0;
 	//start page with play button	
 	//cout << "Made it here 2" << endl;		
-	while( !quit )
+	while( quit < 2 )
 	{
 		gStartTexture.render(0,0);
 		SDL_RenderPresent( gRenderer );
@@ -296,20 +295,22 @@ void start(int *game_state)
 			//User requests quit
 			if( e.type == SDL_QUIT )
 			{
-				quit = true;
+				*game_state = 6;
+				return 0;
 			}
 			for( int i = 0; i < TOTAL_BUTTONS; ++i )
 			{	
 				if(gButtons[ i ].handleEvent( &e )){
-					*game_state=1;
+					
 					click=1;
-					cout << *game_state << endl;
-					quit = true;
+					
+					quit++;
 				}
 			}						
 		}
 				
 	}
+	if (click==1) *game_state = *game_state + 1;
 	//cout << "Made it here 3" << endl;
 	//return click;		
 
@@ -360,7 +361,7 @@ int play(string lvl, int *game_state)
 					//User requests quit
 					if( e.type == SDL_QUIT )
 					{
-						*game_state = 3;
+						*game_state = 6;
 						return -1;
 					}
 					
@@ -377,19 +378,19 @@ int play(string lvl, int *game_state)
 				for (int i = 0; i < allMarbles.size(); i++){
 				     int win=allMarbles[i]->move(allMarbles, marblecollisionX, marblecollisionY, targetx, targety );
 				     if (win==1){
-					*game_state=0;	
+					*game_state = *game_state+1;	
 					
 					return 1;
 				     }
 				     else if (win==0){
-					*game_state = 0;
+					*game_state = *game_state - 1;
 					return 0;
 				     }	
 				     else{
 				     }
 				}
 			
-				cout << *game_state << endl;
+			
 				//if(!win) break;
 				//Clear screen
 				SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
@@ -453,9 +454,15 @@ int main( int argc, char* args[] )
 						break; 	
 					case 1: play(lvlFiles[0], &game_state);
 						break;
-					case 2: play(lvlFiles[1], &game_state);
+					case 2: start(&game_state);
 						break;
-					case 3: playing=false;
+					case 3: play(lvlFiles[1], &game_state);
+						break;
+					case 4: start(&game_state);
+						break;
+					case 5: play(lvlFiles[2], &game_state);
+						break; 
+					case 6: playing=false;
 						break;
 				}
 			}
