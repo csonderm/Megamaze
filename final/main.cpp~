@@ -360,7 +360,7 @@ int play(string lvl, int *game_state)
 					//User requests quit
 					if( e.type == SDL_QUIT )
 					{
-						*game_state = 3;
+						*game_state = 2;
 						return -1;
 					}
 					
