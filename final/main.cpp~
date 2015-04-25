@@ -56,7 +56,6 @@ LTexture gBlockTexture;
 LTexture gBackgroundTexture;
 LTexture gTargetTexture;
 LTexture gStartTexture;
-LTexture gHoleSheetTexture;
 
 const int EXPLOSION_ANIMATION_FRAMES = 5;
 SDL_Rect gSpriteClips[EXPLOSION_ANIMATION_FRAMES ];

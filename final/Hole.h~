@@ -6,7 +6,7 @@ using namespace std;
 class Hole{
     public:
 	Hole(int, int, int, int, string = "Hole", int);
-	int action(&Dot);
+	void action(&Dot);
 	virtual void render(SDL_Rect*); 
 
     private:
