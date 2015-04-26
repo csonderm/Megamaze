@@ -1,7 +1,7 @@
 all: main
 
-main: main.o LTexture.o Dot.o LButton.o Obstacle.o Hole.o
-	g++ main.o LTexture.o Dot.o LButton.o Obstacle.o Hole.o -o main -w -lSDL2 -lSDL2_image
+main: main.o LTexture.o Dot.o LButton.o Hole.o
+	g++ main.o LTexture.o Dot.o LButton.o Hole.o -o main -w -lSDL2 -lSDL2_image
 main.o: main.cpp
 	g++ -c main.cpp 
 Dot.o: Dot.cpp Dot.h

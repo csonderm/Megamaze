@@ -8,14 +8,6 @@ Obstacle::Obstacle(int posX, int posY, int height, int width, string name){
 	x = posX;
 	y = posY;
 	typeName = name;
-	loadTexture();
 }
 
-bool loadTexture(string path){
-	bool success = true;
-	if( !gTexture.loadFromFile( path ) )
-	{
-		printf( "Failed to load texture image!\n" );
-		success = false;
-	}
-}
+

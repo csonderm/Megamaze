@@ -1,3 +1,4 @@
+
 #ifndef OBSTACLE_H
 #define OBSTACLE_H
 
@@ -12,7 +13,6 @@ class Obstacle{
 	virtual void render(int, int, SDL_Rect*) = 0; 
 	LTexture gTexture;
 	SDL_Rect mCollider;
-	virtual bool loadTexture() = 0;
 
     private:
 	string typeName;
@@ -21,7 +21,6 @@ class Obstacle{
 	int h;
 	int w;
 };
-
 
 #endif
 

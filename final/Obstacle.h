@@ -1,3 +1,4 @@
+
 #ifndef OBSTACLE_H
 #define OBSTACLE_H
 
@@ -21,19 +22,4 @@ class Obstacle{
 	int w;
 };
 
-
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-#endif OBSTACLE

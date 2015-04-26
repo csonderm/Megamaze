@@ -1,3 +1,7 @@
+#include "Obstacle.h"
+
+using namespace std;
+
 Obstacle::Obstacle(int posX, int posY, int height, int width, string name){
 	mCollider.x = posX;
 	mCollider.y = posY;
