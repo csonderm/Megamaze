@@ -170,6 +170,9 @@ int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int
 		exit = (*allObstacles[j]).action(this);
 		if (exit == 0) return 0;
 	}
+	else if ((!checkCollision(mCollider, (*allObstacles[j]).mCollider))&&((*allObstacles[j]).getTypeName() == "Button")&&(this == ((*allObstacles[j]).getMarblePtr()))){
+		(*allObstacles[j]).resetOver();
+	}
     }
 
 

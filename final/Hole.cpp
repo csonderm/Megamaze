@@ -58,11 +58,14 @@ void Hole::render(){
 	}
 }
 
-void Hole::changeCovered(){
-	//if (covered == 0){
+void Hole::changeCovered(int over){
+    if (over == 0){
+	if (covered == 0){
 		covered = 1;
-	//}
-	/*else{
+	}
+	else{
 		covered = 0;
-	}*/
+	}
+    }
 }
+

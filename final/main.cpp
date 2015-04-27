@@ -429,7 +429,7 @@ int start(int *game_state, int time, int lives)
 			//User requests quit
 			if( e.type == SDL_QUIT )
 			{
-				*game_state = 7;
+				*game_state = 9;
 				return 0;
 			}
 			for( int i = 0; i < TOTAL_BUTTONS; ++i )
@@ -447,7 +447,6 @@ int start(int *game_state, int time, int lives)
 				
 	}
 	if (click==1) *game_state = *game_state + 1;
-	//cout << "Made it here 3" << endl;
 	//return click;		
 
 }
@@ -494,7 +493,7 @@ int lose(int *game_state, int time, int lives)
 			//User requests quit
 			if( e.type == SDL_QUIT )
 			{
-				*game_state = 7;
+				*game_state = 9;
 				return 0;
 			}
 			for( int i = 0; i < TOTAL_BUTTONS; ++i )
@@ -561,13 +560,13 @@ int play(string lvl, int *game_state, int *lives)
 			}
 
 			for (int i = 0; i < Holex.size(); i++){
-			    Hole* hole = new Hole(Holex[i], Holey[i], 21, 21, "Hole", HoleType[i]);
+			    Hole* hole = new Hole(Holex[i], Holey[i], 15, 15, "Hole", HoleType[i]);
 			    allHoles.push_back(hole);
 			    allObstacles.push_back(hole);
 			}
 			
 			for (int i = 0; i < Buttonx.size(); i++){
-			    Button* button = new Button(Buttonx[i], Buttony[i], 18, 18, "Button", allHoles[i]);
+			    Button* button = new Button(Buttonx[i], Buttony[i], 5, 5, "Button", allHoles[i]);
 			    allObstacles.push_back(button);
 			}
 
@@ -580,7 +579,7 @@ int play(string lvl, int *game_state, int *lives)
 					//User requests quit
 					if( e.type == SDL_QUIT )
 					{
-						*game_state = 7;
+						*game_state = 9;
 						return -1;
 					}
 					
@@ -605,7 +604,7 @@ int play(string lvl, int *game_state, int *lives)
 					*game_state = *game_state - 1;
 					*lives=(*lives)-1;
 					if (*lives==0){
-						*game_state=6;
+						*game_state=8;
 					}
 					return 0;
 				     }	
@@ -683,7 +682,7 @@ int main( int argc, char* args[] )
 						break; 	
 					case 1: {LTimer timer;	
 						timer.start();
-						play(lvlFiles[0], &game_state, &lives);
+						play(lvlFiles[3], &game_state, &lives);
 						timer.pause();
 						time=timer.getTicks();
 						timer.stop();}
@@ -706,9 +705,18 @@ int main( int argc, char* args[] )
 						time=timer3.getTicks();
 						timer3.stop();}
 						break;
-					case 6: {lose(&game_state, time, lives);}
+					case 6: {start(&game_state, time, lives);}
+						break;
+					case 7: {LTimer timer4;	
+						timer4.start();
+						play(lvlFiles[3], &game_state, &lives);
+						timer4.pause();
+						time=timer4.getTicks();
+						timer4.stop();}
+						break;
+					case 8: {lose(&game_state, time, lives);}
 						break; 
-					case 7: {playing=false;}
+					case 9: {playing=false;}
 						break;
 				}
 			}

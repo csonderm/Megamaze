@@ -9,6 +9,7 @@ using namespace std;
 #include "LTexture.h"
 #include "Dot.h"
 #include "Obstacle.h"
+#include "LTimer.h"
 //#include "Button.h"
 
 extern LTexture gHoleSheetTexture;
@@ -19,7 +20,7 @@ class Hole : public Obstacle{
 	Hole(int, int, int, int, string = "Hole", int = 0);
 	virtual int action(Dot*);
 	virtual void render(); 
-	void changeCovered();
+	void changeCovered(int);
 	int getbDirect();
 	//Button myButton;
 

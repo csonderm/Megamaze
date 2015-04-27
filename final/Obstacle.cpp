@@ -16,6 +16,7 @@ Obstacle::Obstacle(int posX, int posY, int height, int width, string name){
 	x = posX;
 	y = posY;
 	typeName = name;
+	marblePtr = NULL;
 }
 
 int Obstacle::getX(){
@@ -29,4 +30,18 @@ int Obstacle::getH(){
 }
 int Obstacle::getW(){
 	return w;
+}
+string Obstacle::getTypeName(){
+	return typeName;
+}
+
+Dot* Obstacle::getMarblePtr(){
+	return marblePtr;
+}
+
+void Obstacle::setMarblePtr(Dot* ptr){
+	marblePtr = ptr;
+}
+
+void Obstacle::resetOver(){
 }
