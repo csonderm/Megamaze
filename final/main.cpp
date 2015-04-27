@@ -655,9 +655,10 @@ int main( int argc, char* args[] )
 	lvlFiles.push_back("levels/lvl1.txt");
 	lvlFiles.push_back("levels/lvl2.txt");
 	lvlFiles.push_back("levels/lvl3.txt");
+	lvlFiles.push_back("levels/lvl4.txt");
 	int lvl=0;
 	int complete;
-	int lives=2;		//you get 2 lives or you lose
+	int lives=3;		//you get 2 lives or you lose
 	int time=0;
 	//Start up SDL and create window
 	if( !init() )

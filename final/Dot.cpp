@@ -230,7 +230,7 @@ int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int
 	targetCollider.y = targety;
 	targetCollider.h = 20;
 	targetCollider.w = 20;
-	if (checkCollision(mCollider, targetCollider)){
+	if ((checkCollision(mCollider, targetCollider))&&(getAlive() == true)){
 		if (player == 0){
 		   return 0;
 		
