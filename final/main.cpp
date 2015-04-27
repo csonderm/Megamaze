@@ -47,7 +47,7 @@ void close();
 void renderMap(vector<int> & , vector<int> &, vector<int> &, vector<int> &, vector<int> & marbleType, int & targetx, int & targety, string, vector<int> &, vector<int> &, vector<int> &);
 
 //play game function
-int play(string, int *, int *);
+int play(string, int *, int *, int *);
 
 //start screen function
 
@@ -86,6 +86,7 @@ LButton gButtons[ TOTAL_BUTTONS ];
 LTexture gTimeTextTexture;
 LTexture gLivesTexture;
 TTF_Font* gFont = NULL;
+LTexture gTTextTexture;
 
 bool init()
 {
@@ -396,7 +397,7 @@ int start(int *game_state, int time, int lives)
 	stringstream timeText;
 	stringstream livesText;
 	timeText.str( "" );
-	timeText << "Score: " << ( time / 1000 ) ; 
+	timeText << "Time: " << ( time / 1000 ) ; 
 	livesText.str( "" );
 	livesText << "Lives: " << (lives);	
 	
@@ -490,6 +491,7 @@ int lose(int *game_state, int time, int lives)
 		//Handle events on queue
 		while( SDL_PollEvent( &e ) != 0 )
 		{
+
 			//User requests quit
 			if( e.type == SDL_QUIT )
 			{
@@ -518,7 +520,7 @@ int lose(int *game_state, int time, int lives)
 
 }
 
-int play(string lvl, int *game_state, int *lives)
+int play(string lvl, int *game_state, int *lives, int *time)
 {
 	vector<Dot*> allMarbles;
 	vector<Hole*> allHoles;
@@ -540,6 +542,10 @@ int play(string lvl, int *game_state, int *lives)
 
 	int targetx;
 	int targety;
+	//Set text color as black
+	SDL_Color textColor = { 0, 0, 0, 255 };	
+
+
 	
 			//Main loop flag
 			bool quit = false;
@@ -548,10 +554,13 @@ int play(string lvl, int *game_state, int *lives)
 			SDL_Event e;
 
 			int frame = 0;
+
 	
 			
 			//play game
 			renderMap(marblecollisionX, marblecollisionY, startx,starty,marbleType,targetx,targety, lvl, Holex, Holey, HoleType, Buttonx, Buttony);
+
+
 					
 			for (int i = 0; i < startx.size(); i++){
 			    Dot* marble = new Dot(startx[i], starty[i], marbleType[i]);
@@ -569,6 +578,12 @@ int play(string lvl, int *game_state, int *lives)
 			    Button* button = new Button(Buttonx[i], Buttony[i], 5, 5, "Button", allHoles[i]);
 			    allObstacles.push_back(button);
 			}
+
+			LTimer timer;	
+			timer.start();
+	
+
+
 
 			//While application is running
 			while( !quit )
@@ -590,13 +605,31 @@ int play(string lvl, int *game_state, int *lives)
 
 					}
 				}
-			
+					//In memory text stream, set up time to display
+					stringstream tText;
+					stringstream lText;
+					tText.str( "" );
+					tText << "Time: " << ( timer.getTicks() / 1000 ) ; 
+					lText.str( "" );
+					lText << "Lives: " << ( *lives); 
+					//Render text
+					if( !gTTextTexture.loadFromRenderedText( tText.str().c_str(), textColor ) )
+					{
+						printf( "Unable to render time texture!\n" );
+					}
+					if( !gLivesTexture.loadFromRenderedText( lText.str().c_str(), textColor ) )
+					{
+						printf( "Unable to render lives texture!\n" );
+					}
 
 				//Move the dot and check collision
 				for (int i = 0; i < allMarbles.size(); i++){
 				     int win=allMarbles[i]->move(allMarbles, marblecollisionX, marblecollisionY, targetx, targety, allObstacles);
 				     if (win==1){
-					*game_state = *game_state+1;	
+					*game_state = *game_state+1;
+					timer.pause();
+					*time=timer.getTicks();
+					timer.stop();	
 					
 					return 1;
 				     }
@@ -606,6 +639,9 @@ int play(string lvl, int *game_state, int *lives)
 					if (*lives==0){
 						*game_state=8;
 					}
+					timer.pause();
+					*time=timer.getTicks();
+					timer.stop();	
 					return 0;
 				     }	
 				     else{
@@ -625,7 +661,9 @@ int play(string lvl, int *game_state, int *lives)
 				//render Map
 				
 				renderMap(marblecollisionX, marblecollisionY, startx, starty, marbleType,targetx,targety, lvl, Holex, Holey, HoleType, Buttonx, Buttony);
-
+				gTTextTexture.render(600,20);
+				gLivesTexture.render(600, 55);
+	
 				for (int i = 0; i < allHoles.size(); i++){
 					allHoles[i]->render();
 				}
@@ -680,39 +718,19 @@ int main( int argc, char* args[] )
 				switch(game_state){
 					case 0: {start(&game_state, time, lives);}	//start game			
 						break; 	
-					case 1: {LTimer timer;	
-						timer.start();
-						play(lvlFiles[3], &game_state, &lives);
-						timer.pause();
-						time=timer.getTicks();
-						timer.stop();}
+					case 1: play(lvlFiles[3], &game_state, &lives, &time);
 						break;
 					case 2: {start(&game_state, time, lives);}
-						break;
-					case 3: {LTimer timer2;	
-						timer2.start();
-						play(lvlFiles[1], &game_state, &lives);
-						timer2.pause();
-						time=timer2.getTicks();
-						timer2.stop();}
+						break;	
+					case 3: play(lvlFiles[1], &game_state, &lives, &time);
 						break;
 					case 4: {start(&game_state, time, lives);}
 						break;
-					case 5: {LTimer timer3;	
-						timer3.start();
-						play(lvlFiles[2], &game_state, &lives);
-						timer3.pause();
-						time=timer3.getTicks();
-						timer3.stop();}
+					case 5: play(lvlFiles[2], &game_state, &lives, &time);
 						break;
 					case 6: {start(&game_state, time, lives);}
 						break;
-					case 7: {LTimer timer4;	
-						timer4.start();
-						play(lvlFiles[3], &game_state, &lives);
-						timer4.pause();
-						time=timer4.getTicks();
-						timer4.stop();}
+					case 7: play(lvlFiles[3], &game_state, &lives, &time);
 						break;
 					case 8: {lose(&game_state, time, lives);}
 						break; 
