@@ -18,6 +18,8 @@
 #include <vector>
 #include "Dot.h"
 #include "LTexture.h"
+//#include "Obstacle.h"
+//#include "Hole.h"
 
 using namespace std;
 
@@ -102,7 +104,7 @@ void Dot::handleEvent( SDL_Event& e )
     }
 }
 
-int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int> marblecollisionY, int targetx, int targety )
+int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int> marblecollisionY, int targetx, int targety/*, vector <Obstacle*> allObstacles*/ )
 {
 	
     //Move the dot left or right
@@ -161,9 +163,20 @@ int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int
 
 
 	vector<Dot *> tempVec;
+    /*int exit;
+    //Checking Collision with Obstacle
+    for (int j = 0; j < allObstacles.size(); j++){
+	if (checkCollision(mCollider, (*allObstacles[j]).mCollider)){
+		exit = (*allObstacles[j]).action(this);
+		if (exit == 0) return 0;
+	}
+	}
+	
+		
+    }
+*/
 
-
-
+	//Checking collision with other marbles
     for (int j = 0; j < allMarbles.size(); j++){
 	if (checkCollision(mCollider, (*allMarbles[j]).mCollider)&&(this != allMarbles[j])&&((*this).getAlive()==true)&&((*allMarbles[j]).getAlive()==true)){
 		  for (int frame = 0; frame < 125; frame++){
@@ -213,7 +226,7 @@ int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int
 	
     }
 
-
+//Collisions with Target
 	SDL_Rect targetCollider;
 	targetCollider.x = targetx;
 	targetCollider.y = targety;
@@ -221,7 +234,7 @@ int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int
 	targetCollider.w = 20;
 	if (checkCollision(mCollider, targetCollider)){
 		if (player == 0){
-		    mPosY = -999;
+		   return 0;
 		
 
 		}
@@ -234,6 +247,7 @@ int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int
 	}
 
 	return -1;
+
 
 }
 

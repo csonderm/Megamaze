@@ -1,21 +1,28 @@
 //Hole.cpp
 
-
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include "Hole.h"
 #include <stdio.h>
 #include <iostream>
 #include "LTexture.h"
+#include "Obstacle.h"
+#include "Dot.h"
 extern LTexture gHoleSheetTexture;
 extern LTexture g3SpriteSheetTexture;
+extern LTexture gButtonTexture;
+
+extern const int HOLE_FRAMES = 2;
+extern SDL_Rect g3SpriteClips[HOLE_FRAMES];
 
 using namespace std;
 
-Hole::Hole(int posX, int posY, int height, int width, string name, int d) : Obstacle(posX, posY, height, width, name) {
+Hole::Hole(int posX, int posY, int height, int width, string name, int d):Obstacle(posX, posY, height, width, name) {
 	bDirect = d;	// 1 up, 2 right, 3 down, 4 left 
 	covered = 0;	// hole is uncovered
 }
 
-int Hole::action(&Dot marble){
+int Hole::action(Dot& marble){
 	if (covered == 0){
 		marble.setAlive(false);
 		if (marble.getPlayer() == 1){
@@ -28,22 +35,22 @@ int Hole::action(&Dot marble){
 
 void Hole::render(){
 	if (covered == 0){
-	    gHoleSheetTexture.render(x, y, &g3SpriteClips[0]);
+	    gHoleSheetTexture.render(getX(), getY(), &g3SpriteClips[0]);
 	}
 	else{
-	    gHoleSheetTexture.render(x, y, &g3SpriteClips[1]);
+	    gHoleSheetTexture.render(getX(), getY(), &g3SpriteClips[1]);
 	}
 	if (bDirect == 1){
-		gButtonTexture.render(x, y+21); 
+		gButtonTexture.render(getX(), getY()+21); 
 	}
 	else if (bDirect == 2){
-		gButtonTexture.render(x+21, y); 
+		gButtonTexture.render(getX()+21, getY()); 
 	}
 	else if (bDirect == 3){
-		gButtonTexture.render(x, y-21); 
+		gButtonTexture.render(getX(), getY()-21); 
 	}
 	else if (bDirect == 4){
-		gButtonTexture.render(x-21, y); 
+		gButtonTexture.render(getX()-21, getY()); 
 	}
 	else{
 	}

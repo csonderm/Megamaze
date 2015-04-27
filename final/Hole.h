@@ -4,16 +4,19 @@
 #define HOLE_H
 
 using namespace std;
-
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include "LTexture.h"
 #include "Dot.h"
+#include "Obstacle.h"
+
 extern LTexture gHoleSheetTexture;
 extern LTexture g3SpriteSheetTexture;
 
-class Hole{
+class Hole : public Obstacle{
     public:
 	Hole(int, int, int, int, string = "Hole", int = 0);
-	int action(Dot&);
+	virtual int action(Dot &);
 	virtual void render(); 
 
     private:

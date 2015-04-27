@@ -76,7 +76,7 @@ LTexture g3SpriteSheetTexture;
 LButton gButtons[ TOTAL_BUTTONS ]; 
 
 #include "Dot.h"
-#include "Obstacle.h"
+//#include "Obstacle.h"
 #include "Hole.h"
 
 bool init()
@@ -373,6 +373,7 @@ int play(string lvl, int *game_state)
 {
 	vector<Dot*> allMarbles;
 	vector<Hole*> allHoles;
+	vector<Obstacle*> allObstacles;
 
 	vector<int> marblecollisionX; //wall x
 	vector<int> marblecollisionY; //wall y
@@ -409,7 +410,7 @@ int play(string lvl, int *game_state)
 			for (int i = 0; i < Holex.size(); i++){
 			    Hole* hole = new Hole(Holex[i], Holey[i], 21, 21, "Hole", HoleType[i]);
 			    allHoles.push_back(hole);
-			
+			    allObstacles.push_back(hole);
 			}
 			
 			//While application is running
@@ -440,7 +441,7 @@ int play(string lvl, int *game_state)
 
 				//Move the dot and check collision
 				for (int i = 0; i < allMarbles.size(); i++){
-				     int win=allMarbles[i]->move(allMarbles, marblecollisionX, marblecollisionY, targetx, targety );
+				     int win=allMarbles[i]->move(allMarbles, marblecollisionX, marblecollisionY, targetx, targety/*, allObstacles*/);
 				     if (win==1){
 					*game_state = *game_state+1;	
 					
@@ -468,6 +469,9 @@ int play(string lvl, int *game_state)
 				
 				renderMap(marblecollisionX, marblecollisionY, startx, starty, marbleType,targetx,targety, lvl, Holex, Holey, HoleType);
 
+				for (int i = 0; i < allHoles.size(); i++){
+					allHoles[i]->render();
+				}
 				for (int i = 0; i < allMarbles.size(); i++){
 					if ( marbleType[i]== 1 ) {
 						allMarbles[i]->renderMine();
@@ -476,9 +480,7 @@ int play(string lvl, int *game_state)
 				     		allMarbles[i]->render();
 					}
 				}
-				for (int i = 0; i < allHoles.size(); i++){
-					allHoles[i]->render();
-				}
+			
 				//Update screen
 				SDL_RenderPresent( gRenderer );
 

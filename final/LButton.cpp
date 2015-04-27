@@ -98,6 +98,7 @@ bool LButton::handleEvent( SDL_Event* e )
 			return inside;
 		}
 	}
+	return false;
 }
 	
 void LButton::render()
