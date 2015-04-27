@@ -104,7 +104,7 @@ void Dot::handleEvent( SDL_Event& e )
     }
 }
 
-int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int> marblecollisionY, int targetx, int targety/*, vector <Obstacle*> allObstacles*/ )
+int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int> marblecollisionY, int targetx, int targety, vector <Obstacle*> allObstacles )
 {
 	
     //Move the dot left or right
@@ -163,18 +163,16 @@ int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int
 
 
 	vector<Dot *> tempVec;
-    /*int exit;
+     int exit;
     //Checking Collision with Obstacle
     for (int j = 0; j < allObstacles.size(); j++){
-	if (checkCollision(mCollider, (*allObstacles[j]).mCollider)){
+	if ((checkCollision(mCollider, (*allObstacles[j]).mCollider))&&((*this).getAlive()==true)){
 		exit = (*allObstacles[j]).action(this);
 		if (exit == 0) return 0;
 	}
-	}
-	
-		
     }
-*/
+
+
 
 	//Checking collision with other marbles
     for (int j = 0; j < allMarbles.size(); j++){

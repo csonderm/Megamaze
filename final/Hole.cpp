@@ -22,14 +22,16 @@ Hole::Hole(int posX, int posY, int height, int width, string name, int d):Obstac
 	covered = 0;	// hole is uncovered
 }
 
-int Hole::action(Dot& marble){
+int Hole::action(Dot* marble){
 	if (covered == 0){
-		marble.setAlive(false);
-		if (marble.getPlayer() == 1){
+		marble->setAlive(false);
+		if (marble->getPlayer() == 1){
 			return 0;
 		}
+		return -1;
 	}
 	else{
+		return -1;
 	}
 }
 
@@ -40,18 +42,27 @@ void Hole::render(){
 	else{
 	    gHoleSheetTexture.render(getX(), getY(), &g3SpriteClips[1]);
 	}
-	if (bDirect == 1){
-		gButtonTexture.render(getX(), getY()+21); 
-	}
-	else if (bDirect == 2){
-		gButtonTexture.render(getX()+21, getY()); 
-	}
-	else if (bDirect == 3){
+	if (bDirect == 1){ //up
 		gButtonTexture.render(getX(), getY()-21); 
 	}
-	else if (bDirect == 4){
+	else if (bDirect == 2){ //right
+		gButtonTexture.render(getX()+21, getY()); 
+	}
+	else if (bDirect == 3){ //down
+		gButtonTexture.render(getX(), getY()+21); 
+	}
+	else if (bDirect == 4){ // left
 		gButtonTexture.render(getX()-21, getY()); 
 	}
 	else{
 	}
+}
+
+void Hole::changeCovered(){
+	//if (covered == 0){
+		covered = 1;
+	//}
+	/*else{
+		covered = 0;
+	}*/
 }

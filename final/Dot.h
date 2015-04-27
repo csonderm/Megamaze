@@ -8,7 +8,7 @@
 #include <vector>
 #include "LTexture.h"
 //#include "Hole.h"
-//#include "Obstacle.h"
+#include "Obstacle.h"
 
 using namespace std;
 
@@ -31,7 +31,7 @@ class Dot
 		void handleEvent( SDL_Event& e );
 
 		//Moves the dot and checks collision
-		int move( vector<Dot*>, vector<int> , vector<int> , int, int/*, vector<Obstacle*>*/ );
+		int move( vector<Dot*>, vector<int> , vector<int> , int, int, vector<Obstacle*> );
 
 		//Shows the dot on the screen
 		void render();

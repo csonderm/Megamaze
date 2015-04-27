@@ -82,6 +82,7 @@ LButton gButtons[ TOTAL_BUTTONS ];
 //#include "Obstacle.h"
 #include "Hole.h"
 #include "LTimer.h"
+#include "Button.h"
 LTexture gTimeTextTexture;
 LTexture gLivesTexture;
 TTF_Font* gFont = NULL;
@@ -278,6 +279,9 @@ void close()
 	gLoseTexture.free();
 	gBlockTexture.free();
 	gTargetTexture.free();
+	g3SpriteSheetTexture.free();
+	gHoleSheetTexture.free();
+	gButtonTexture.free();
 
 	//Destroy window	
 	SDL_DestroyRenderer( gRenderer );
@@ -294,7 +298,7 @@ void close()
 
 
 
-void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, vector<int> & startx, vector<int> & starty, vector<int> & marbleType, int & targetx, int & targety, string lvl, vector<int> & Holex, vector<int> & Holey, vector<int> & HoleType){
+void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, vector<int> & startx, vector<int> & starty, vector<int> & marbleType, int & targetx, int & targety, string lvl, vector<int> & Holex, vector<int> & Holey, vector<int> & HoleType, vector<int> & Buttonx, vector<int> & Buttony){
 
 
 	marblecollisionX.clear();
@@ -306,6 +310,9 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
 	Holex.clear();
 	Holey.clear();
 	HoleType.clear();
+
+	Buttonx.clear();
+	Buttony.clear();
 
         //Rendering map from text file
         char piece;
@@ -343,21 +350,29 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
 			if (piece == 'u'){
 				Holex.push_back(0+x*21);				
 				Holey.push_back(40+21*y);
+				Buttonx.push_back(0+x*21);				
+				Buttony.push_back(40+21*y-21);
 				HoleType.push_back(1); //hole marble
 			}
 			if (piece == 'd'){
 				Holex.push_back(0+x*21);				
 				Holey.push_back(40+21*y);
+				Buttonx.push_back(0+x*21);				
+				Buttony.push_back(40+21*y+21);
 				HoleType.push_back(3); //hole marble
 			}
 			if (piece == 'l'){
 				Holex.push_back(0+x*21);				
 				Holey.push_back(40+21*y);
+				Buttonx.push_back(0+x*21-21);				
+				Buttony.push_back(40+21*y);
 				HoleType.push_back(4); //hole marble
 			}
 			if (piece == 'r'){
 				Holex.push_back(0+x*21);				
 				Holey.push_back(40+21*y);
+				Buttonx.push_back(0+x*21+21);				
+				Buttony.push_back(40+21*y);
 				HoleType.push_back(2); //hole marble
 			}
                         if (piece == '\n'){
@@ -521,6 +536,9 @@ int play(string lvl, int *game_state, int *lives)
 	vector<int> Holey; //vector of marble start y
 	vector<int> HoleType; //vector of marble types (correlates with startx starty)
 
+	vector<int> Buttonx; //vector of button start x
+	vector<int> Buttony; //vector of button start y
+
 	int targetx;
 	int targety;
 	
@@ -534,7 +552,7 @@ int play(string lvl, int *game_state, int *lives)
 	
 			
 			//play game
-			renderMap(marblecollisionX, marblecollisionY, startx,starty,marbleType,targetx,targety, lvl, Holex, Holey, HoleType);
+			renderMap(marblecollisionX, marblecollisionY, startx,starty,marbleType,targetx,targety, lvl, Holex, Holey, HoleType, Buttonx, Buttony);
 					
 			for (int i = 0; i < startx.size(); i++){
 			    Dot* marble = new Dot(startx[i], starty[i], marbleType[i]);
@@ -548,6 +566,11 @@ int play(string lvl, int *game_state, int *lives)
 			    allObstacles.push_back(hole);
 			}
 			
+			for (int i = 0; i < Buttonx.size(); i++){
+			    Button* button = new Button(Buttonx[i], Buttony[i], 18, 18, "Button", allHoles[i]);
+			    allObstacles.push_back(button);
+			}
+
 			//While application is running
 			while( !quit )
 			{
@@ -572,7 +595,7 @@ int play(string lvl, int *game_state, int *lives)
 
 				//Move the dot and check collision
 				for (int i = 0; i < allMarbles.size(); i++){
-				     int win=allMarbles[i]->move(allMarbles, marblecollisionX, marblecollisionY, targetx, targety/*, allObstacles*/);
+				     int win=allMarbles[i]->move(allMarbles, marblecollisionX, marblecollisionY, targetx, targety, allObstacles);
 				     if (win==1){
 					*game_state = *game_state+1;	
 					
@@ -602,7 +625,7 @@ int play(string lvl, int *game_state, int *lives)
 				starty.clear();
 				//render Map
 				
-				renderMap(marblecollisionX, marblecollisionY, startx, starty, marbleType,targetx,targety, lvl, Holex, Holey, HoleType);
+				renderMap(marblecollisionX, marblecollisionY, startx, starty, marbleType,targetx,targety, lvl, Holex, Holey, HoleType, Buttonx, Buttony);
 
 				for (int i = 0; i < allHoles.size(); i++){
 					allHoles[i]->render();

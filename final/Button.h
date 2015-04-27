@@ -1,22 +1,15 @@
 //Button.h
 
-class Button{
+#include "Obstacle.h"
+#include "Hole.h"
+
+class Button : public Obstacle{
     public:
-	Button(int);
-	action(Dot, Button);
-	int getBNum();
+	Button(int, int, int, int, string = "Button", Hole* = NULL);
+	virtual int action(Dot*);
+	virtual void render();
     private:
-	int BNum;
-}
+	Hole* holePtr;
+};
 
-Button::Button(int n){
-	BNum = n;	
-}
-
-Button::action(Dot marble, Button b){
-	if (hNum == BNum){
-	    hNum.setCovered(1);
-	}
-
-}
 
