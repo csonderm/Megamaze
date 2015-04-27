@@ -6,6 +6,7 @@ and may not be redistributed without written permission.*/
 //Using SDL, SDL_image, standard IO, and strings	
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include <string>
 #include <iostream>
@@ -14,6 +15,7 @@ and may not be redistributed without written permission.*/
 #include <algorithm>
 #include <iterator>
 #include <stdlib.h>
+#include <sstream>
 
 using namespace std;
 
@@ -29,7 +31,7 @@ SDL_Renderer* gRenderer = NULL;
 
 
 #include "LTexture.h"
-
+#include "LTimer.h"
 
 //Starts up SDL and creates window
 bool init();
@@ -45,7 +47,7 @@ void close();
 void renderMap(vector<int> & , vector<int> &, vector<int> &, vector<int> &, vector<int> & marbleType, int & targetx, int & targety, string, vector<int> &, vector<int> &, vector<int> &);
 
 //play game function
-int play(string, int *);
+int play(string, int *, int *);
 
 //start screen function
 
@@ -58,6 +60,7 @@ LTexture gTargetTexture;
 LTexture gStartTexture;
 LTexture gHoleSheetTexture;
 LTexture gButtonTexture;
+LTexture gLoseTexture;
 
 const int EXPLOSION_ANIMATION_FRAMES = 5;
 SDL_Rect gSpriteClips[EXPLOSION_ANIMATION_FRAMES ];
@@ -78,6 +81,10 @@ LButton gButtons[ TOTAL_BUTTONS ];
 #include "Dot.h"
 //#include "Obstacle.h"
 #include "Hole.h"
+#include "LTimer.h"
+LTexture gTimeTextTexture;
+LTexture gLivesTexture;
+TTF_Font* gFont = NULL;
 
 bool init()
 {
@@ -99,7 +106,7 @@ bool init()
 		}
 
 		//Create window
-		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+		gWindow = SDL_CreateWindow( "Megamaze", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
 		if( gWindow == NULL )
 		{
 			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -124,6 +131,12 @@ bool init()
 				if( !( IMG_Init( imgFlags ) & imgFlags ) )
 				{
 					printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
+					success = false;
+				}
+				 //Initialize SDL_ttf
+				if( TTF_Init() == -1 )
+				{
+					printf( "SDL_ttf could not initialize! SDL_ttf Error: %s\n", TTF_GetError() );
 					success = false;
 				}
 			}
@@ -209,6 +222,15 @@ bool loadMedia()
 	//	gButtons[ 2 ].setPosition( 0,0 );
 	//	gButtons[ 3 ].setPosition( 292, 336);
 	}
+	if( !gLoseTexture.loadFromFile( "media/StartPage.bmp" ) )
+	{
+		printf( "Failed to load Lose Page!\n" );
+		success = false;
+	}
+	else{
+		//Set buttons in corners
+		gButtons[ 0 ].setPosition( 292, 336);
+	}
 
 	//Load sprite sheet texture
 	if( !gSpriteSheetTexture.loadFromFile( "media/Explosion-Sprite-Sheet.png" ) )
@@ -226,16 +248,34 @@ bool loadMedia()
 			gSpriteClips[ i ].h = 60;
 		}
 	}
-
+	//Open the font
+	gFont = TTF_OpenFont( "media/Roboto-Black.ttf", 28 );
+	if( gFont == NULL )
+	{
+		printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
+		success = false;
+	}
+	else
+	{
+		//Set text color as black
+		SDL_Color textColor = { 0, 0, 0, 255 };
+	}
 	return success;
 }
 
 void close()
 {
+	//Free global font
+	TTF_CloseFont( gFont );
+	gFont = NULL;
+
 	//Free loaded images
+	gTimeTextTexture.free();
+	gLivesTexture.free();
 	gDotTexture.free();
 	gSpriteSheetTexture.free();
 	gStartTexture.free();
+	gLoseTexture.free();
 	gBlockTexture.free();
 	gTargetTexture.free();
 
@@ -245,7 +285,9 @@ void close()
 	gWindow = NULL;
 	gRenderer = NULL;
 
+
 	//Quit SDL subsystems
+	TTF_Quit();
 	IMG_Quit();
 	SDL_Quit();
 }
@@ -330,17 +372,41 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
         else cout << "Unable to open file";
 }
 
-int start(int *game_state)
+int start(int *game_state, int time, int lives)
 {
+	//Set text color as black
+	SDL_Color textColor = { 0, 0, 0, 255 };	
+
+	//In memory text stream, set up time to display
+	stringstream timeText;
+	stringstream livesText;
+	timeText.str( "" );
+	timeText << "Score: " << ( time / 1000 ) ; 
+	livesText.str( "" );
+	livesText << "Lives: " << (lives);	
 	
 	SDL_Event e;
 	int quit = 0;
 	int click = 0;
 	//start page with play button	
-	//cout << "Made it here 2" << endl;		
+		
 	while( quit < 2 )
 	{
+		//Render text
+		if( !gTimeTextTexture.loadFromRenderedText( timeText.str().c_str(), textColor ) )
+		{
+			printf( "Unable to render time texture!\n" );
+		}
+		if( !gLivesTexture.loadFromRenderedText( livesText.str().c_str(), textColor ) )
+		{
+			printf( "Unable to render time texture!\n" );
+		}
+		//Clear screen
+		SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+		SDL_RenderClear( gRenderer );
 		gStartTexture.render(0,0);
+		gTimeTextTexture.render(300,50);
+		gLivesTexture.render(300, 0);
 		SDL_RenderPresent( gRenderer );
 		//Handle events on queue
 		while( SDL_PollEvent( &e ) != 0 )
@@ -348,7 +414,7 @@ int start(int *game_state)
 			//User requests quit
 			if( e.type == SDL_QUIT )
 			{
-				*game_state = 6;
+				*game_state = 7;
 				return 0;
 			}
 			for( int i = 0; i < TOTAL_BUTTONS; ++i )
@@ -361,6 +427,8 @@ int start(int *game_state)
 				}
 			}						
 		}
+		//Update screen
+		SDL_RenderPresent( gRenderer );	
 				
 	}
 	if (click==1) *game_state = *game_state + 1;
@@ -369,7 +437,74 @@ int start(int *game_state)
 
 }
 
-int play(string lvl, int *game_state)
+int lose(int *game_state, int time, int lives)
+{
+
+	//Set text color as black
+	SDL_Color textColor = { 0, 0, 0, 255 };	
+
+	//In memory text stream, set up time to display
+	stringstream livesText;
+
+	livesText.str( "" );
+	livesText << "YOU LOSE";
+	//MAKE TEXTURE WITH A CLOSE BUTTON
+
+	SDL_Event e;
+	int quit = 0;
+	int click = 0;
+	//start page with play button	
+		
+	while( quit < 2 )
+	{
+		//Render text
+		//if( !gTimeTextTexture.loadFromRenderedText( timeText.str().c_str(), textColor ) )
+		//{
+		//	printf( "Unable to render time texture!\n" );
+		//}
+		if( !gLivesTexture.loadFromRenderedText( livesText.str().c_str(), textColor ) )
+		{
+			printf( "Unable to render time texture!\n" );
+		}
+		//Clear screen
+		SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+		SDL_RenderClear( gRenderer );
+		gLoseTexture.render(0,0);
+		//gTimeTextTexture.render(300,50);
+		gLivesTexture.render(300, 0);
+		SDL_RenderPresent( gRenderer );
+		//Handle events on queue
+		while( SDL_PollEvent( &e ) != 0 )
+		{
+			//User requests quit
+			if( e.type == SDL_QUIT )
+			{
+				*game_state = 7;
+				return 0;
+			}
+			for( int i = 0; i < TOTAL_BUTTONS; ++i )
+			{	
+				if(gButtons[ i ].handleEvent( &e )){
+					
+					click=1;
+					
+					quit++;
+				}
+			}						
+		}
+		//Update screen
+		SDL_RenderPresent( gRenderer );	
+
+				
+	}
+	if (click==1) *game_state = *game_state + 1;
+
+	//return click;	
+
+
+}
+
+int play(string lvl, int *game_state, int *lives)
 {
 	vector<Dot*> allMarbles;
 	vector<Hole*> allHoles;
@@ -416,17 +551,13 @@ int play(string lvl, int *game_state)
 			//While application is running
 			while( !quit )
 			{
-
-
-				
-
 				//Handle events on queue
 				while( SDL_PollEvent( &e ) != 0 )
 				{
 					//User requests quit
 					if( e.type == SDL_QUIT )
 					{
-						*game_state = 6;
+						*game_state = 7;
 						return -1;
 					}
 					
@@ -449,6 +580,10 @@ int play(string lvl, int *game_state)
 				     }
 				     else if (win==0){
 					*game_state = *game_state - 1;
+					*lives=(*lives)-1;
+					if (*lives==0){
+						*game_state=6;
+					}
 					return 0;
 				     }	
 				     else{
@@ -499,6 +634,8 @@ int main( int argc, char* args[] )
 	lvlFiles.push_back("levels/lvl3.txt");
 	int lvl=0;
 	int complete;
+	int lives=2;		//you get 2 lives or you lose
+	int time=0;
 	//Start up SDL and create window
 	if( !init() )
 	{
@@ -518,39 +655,39 @@ int main( int argc, char* args[] )
 			while(playing){
 				 
 				switch(game_state){
-					case 0: start(&game_state);			//start the game
+					case 0: {start(&game_state, time, lives);}	//start game			
 						break; 	
-					case 1: play(lvlFiles[0], &game_state);
+					case 1: {LTimer timer;	
+						timer.start();
+						play(lvlFiles[0], &game_state, &lives);
+						timer.pause();
+						time=timer.getTicks();
+						timer.stop();}
 						break;
-					case 2: start(&game_state);
+					case 2: {start(&game_state, time, lives);}
 						break;
-					case 3: play(lvlFiles[1], &game_state);
+					case 3: {LTimer timer2;	
+						timer2.start();
+						play(lvlFiles[1], &game_state, &lives);
+						timer2.pause();
+						time=timer2.getTicks();
+						timer2.stop();}
 						break;
-					case 4: start(&game_state);
+					case 4: {start(&game_state, time, lives);}
 						break;
-					case 5: play(lvlFiles[2], &game_state);
+					case 5: {LTimer timer3;	
+						timer3.start();
+						play(lvlFiles[2], &game_state, &lives);
+						timer3.pause();
+						time=timer3.getTicks();
+						timer3.stop();}
+						break;
+					case 6: {lose(&game_state, time, lives);}
 						break; 
-					case 6: playing=false;
+					case 7: {playing=false;}
 						break;
 				}
 			}
-/*
-			while(lvl!=lvlFiles.size()){
-				complete = play(lvlFiles[lvl]);
-				if (complete==0){
-
-				}
-				else if (complete == 1){
-					int startgame=start();
-					lvl++;				
-				}
-				else if (complete == -1){
-					return SDL_QUIT;
-
-				}
-			}		
-
-*/
 		}
 	}
 
