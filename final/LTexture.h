@@ -1,11 +1,11 @@
-/* Megamaze
-   Fund II
-   LTexture interface and implementation.
-*/
- 
 #ifndef LTexture_H
 #define LTexture_H
 
+//Claire Sonderman, Karina Dube, Bobby Flores
+//Fundamentals of Computing II
+//LTexture interface. This class handles all images and textures to the SDL Window
+
+//Using SDL, SDL_image, SDL_ttf, standard IO, and strings, etc.
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
@@ -15,9 +15,7 @@
 #include <algorithm>
 #include <iterator>
 #include <stdlib.h>
-
 #include <vector>
-
 using namespace std;
 
 //Texture wrapper class
