@@ -208,41 +208,41 @@ bool loadMedia()
 	}
 
 	//Load start screen texture
-	if( !gStartTexture.loadFromFile( "media/StartPage.bmp" ) ) {
+	if( !gStartTexture.loadFromFile( "media/StartPage.png" ) ) {
 		printf( "Failed to load Start Page!\n" );
 		success = false;
 	}
 	else {
 		//Set buttons in corners
-		gButtons[ 0 ].setPosition( 292, 336);
+		gButtons[ 0 ].setPosition( 180, 417);
 	}
 
 	//Load lose screen texture
-	if( !gLoseTexture.loadFromFile( "media/StartPage.bmp" ) ) {
+	if( !gLoseTexture.loadFromFile( "media/EndPage.png" ) ) {
 		printf( "Failed to load Lose Page!\n" );
 		success = false;
 	}
 	else {
 		//Set buttons in corners
-		gButtons[ 0 ].setPosition( 292, 336);
+		gButtons[ 0 ].setPosition( 180, 417);
 	}
 	//Load transition screen texture
-	if( !gTransitionTexture.loadFromFile( "media/StartPage.bmp" ) ) {
+	if( !gTransitionTexture.loadFromFile( "media/Transition.png" ) ) {
 		printf( "Failed to load Lose Page!\n" );
 		success = false;
 	}
 	else {
 		//Set buttons in corners
-		gButtons[ 0 ].setPosition( 292, 336);
+		gButtons[ 0 ].setPosition( 180, 417);
 	}
 	//Load instruction screen texture
-	if( !gInstructionTexture.loadFromFile( "media/StartPage.bmp" ) ) {
+	if( !gInstructionTexture.loadFromFile( "media/Instructions.png" ) ) {
 		printf( "Failed to load Lose Page!\n" );
 		success = false;
 	}
 	else {
 		//Set buttons in corners
-		gButtons[ 0 ].setPosition( 292, 336);
+		gButtons[ 0 ].setPosition( 192, 463);
 	}
 
 	//Load explosionsprite sheet texture
@@ -261,7 +261,7 @@ bool loadMedia()
 	}
 
 	//Open the font
-	gFont = TTF_OpenFont( "media/Roboto-Black.ttf", 28 );
+	gFont = TTF_OpenFont( "media/ARCADECLASSIC.TTF", 48 );
 	if( gFont == NULL ) {
 		printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
 		success = false;
@@ -403,7 +403,7 @@ int start(int *game_state, int time, int lives)
 	int click = 0;
 		
 	//set up start screen with play button	
-	while( quit < 2 ) {
+	while( quit < 1 ) {
 		//Clear screen, set up draw color, then render, text textures and set up renderer
 		SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 		SDL_RenderClear( gRenderer );
@@ -415,7 +415,7 @@ int start(int *game_state, int time, int lives)
 			//User requests quit
 			if( e.type == SDL_QUIT ) {
 				//exit
-				*game_state = 9;	
+				*game_state = 13;	
 				return 0;
 			}
 			for( int i = 0; i < TOTAL_BUTTONS; ++i ) {	
@@ -445,7 +445,7 @@ int instruction(int *game_state, int time, int lives)
 	int click = 0;
 		
 	//set up start screen with play button	
-	while( quit < 2 ) {
+	while( quit < 1 ) {
 
 		//Clear screen, set up draw color, then render, text textures and set up renderer
 		SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
@@ -458,7 +458,7 @@ int instruction(int *game_state, int time, int lives)
 			//User requests quit
 			if( e.type == SDL_QUIT ) {
 				//exit
-				*game_state = 9;	
+				*game_state = 13;	
 				return 0;
 			}
 			for( int i = 0; i < TOTAL_BUTTONS; ++i ) {	
@@ -473,7 +473,7 @@ int instruction(int *game_state, int time, int lives)
 		SDL_RenderPresent( gRenderer );	
 				
 	}
-	if (click==1) *game_state = *game_state + 1;
+	if (click==1) *game_state = *game_state + 2;
 	//return click;		
 
 }
@@ -486,9 +486,9 @@ int transition(int *game_state, int time, int lives)
 	stringstream timeText;
 	stringstream livesText;
 	timeText.str( "" );
-	timeText << "Time: " << ( time / 1000 ) ; 
+	timeText << "Time " << ( time / 1000 ) ; 
 	livesText.str( "" );
-	livesText << "Lives: " << (lives);	
+	livesText << "Lives " << (lives);	
 	
 	//event handler
 	SDL_Event e;
@@ -498,7 +498,7 @@ int transition(int *game_state, int time, int lives)
 	int click = 0;
 		
 	//set up start screen with play button	
-	while( quit < 2 ) {
+	while( quit < 1 ) {
 		//Load text
 		if( !gTimeTextTexture.loadFromRenderedText( timeText.str().c_str(), textColor ) ) {
 			printf( "Unable to render time texture!\n" );
@@ -511,8 +511,8 @@ int transition(int *game_state, int time, int lives)
 		SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 		SDL_RenderClear( gRenderer );
 		gTransitionTexture.render(0,0);
-		gTimeTextTexture.render(300,50);
-		gLivesTexture.render(300, 0);
+		gTimeTextTexture.render(300,110);
+		gLivesTexture.render(300, 200);
 		SDL_RenderPresent( gRenderer );
 		
 		//Handle events on queue
@@ -520,7 +520,7 @@ int transition(int *game_state, int time, int lives)
 			//User requests quit
 			if( e.type == SDL_QUIT ) {
 				//exit
-				*game_state = 9;	
+				*game_state = 13;	
 				return 0;
 			}
 			for( int i = 0; i < TOTAL_BUTTONS; ++i ) {	
@@ -553,7 +553,7 @@ int lose(int *game_state, int time, int lives)
 	int click = 0;
 	
 	//lose screen
-	while( quit < 2 ) {
+	while( quit < 1 ) {
 
 		//Clear screen, set draw color, render texts and set up renderer
 		SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
@@ -666,9 +666,9 @@ int play(string lvl, int *game_state, int *lives, int *time)
 		stringstream tText;
 		stringstream lText;
 		tText.str( "" );
-		tText << "Time: " << ( timer.getTicks() / 1000 ) ; 
+		tText << "Time " << ( timer.getTicks() / 1000 ) ; 
 		lText.str( "" );
-		lText << "Lives: " << ( *lives); 
+		lText << "Lives " << ( *lives); 
 		//load text
 		if( !gTTextTexture.loadFromRenderedText( tText.str().c_str(), textColor ) ) {
 			printf( "Unable to render time texture!\n" );
@@ -742,9 +742,10 @@ int main( int argc, char* args[] )
 	//set up level vector that we will run through
 	vector<string> lvlFiles;
 	lvlFiles.push_back("levels/lvl1.txt");
-	lvlFiles.push_back("levels/lvl2.txt");
-	lvlFiles.push_back("levels/lvl3.txt");
 	lvlFiles.push_back("levels/lvl4.txt");
+	lvlFiles.push_back("levels/lvl3.txt");
+	lvlFiles.push_back("levels/lvl2.txt");
+	lvlFiles.push_back("levels/lvl5.txt");
 	
 	//initialize variacles
 	int lvl=0;

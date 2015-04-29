@@ -231,7 +231,7 @@ int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int
 
 		}
 		else{
-		    cout << "YOU WIN!!!!!!!" << endl;
+		  
 		 	return 1;
 		}
 		

@@ -11,8 +11,8 @@
 using namespace std;
 
 //Button constants
-const int BUTTON_WIDTH = 219;
-const int BUTTON_HEIGHT = 87;
+const int BUTTON_WIDTH = 450;
+const int BUTTON_HEIGHT = 120;
 const int TOTAL_BUTTONS = 1;
 
 
