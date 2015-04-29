@@ -1,6 +1,8 @@
+//Claire Sonderman, Karina Dube, Bobby Flores
+//Fundamentals of Computing II
 /* Megamaze
    Fund II
-   Dot interface
+   Marble interface
 */ 
 #ifndef DOT_H
 #define DOT_H
@@ -53,9 +55,9 @@ class Dot
 
 		//The velocity of the dot
 		int mVelX, mVelY;
-
+		//flag distinguishing user from enemey
 		int player;
-
+		//flag for enemies to stop rendering when dead
 		bool alive;
 		
 		

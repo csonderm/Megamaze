@@ -24,7 +24,7 @@ using namespace std;
 //Important global variables
 //Screen dimension constants
 extern const int SCREEN_WIDTH = 800;
-extern const int SCREEN_HEIGHT = 800;
+extern const int SCREEN_HEIGHT = 600;
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
 //The window renderer
@@ -49,7 +49,13 @@ void renderMap(vector<int> & , vector<int> &, vector<int> &, vector<int> &, vect
 //play game function
 int play(string, int *, int *, int *);
 //start screen function
-//transition screen function 
+int start(int *, int, int );
+//transition screen function for between levels
+int transition(int *, int, int);
+//lost/end game screen function
+int lose(int *, int, int);
+//instruction screen function
+int instruction(int *, int , int );
 
 
 
@@ -59,6 +65,8 @@ LTexture gBlockTexture;
 LTexture gBackgroundTexture;
 LTexture gTargetTexture;
 LTexture gStartTexture;
+LTexture gTransitionTexture;
+LTexture gInstructionTexture;
 LTexture gHoleSheetTexture;
 LTexture gButtonTexture;
 LTexture gLoseTexture;
@@ -218,6 +226,24 @@ bool loadMedia()
 		//Set buttons in corners
 		gButtons[ 0 ].setPosition( 292, 336);
 	}
+	//Load transition screen texture
+	if( !gTransitionTexture.loadFromFile( "media/StartPage.bmp" ) ) {
+		printf( "Failed to load Lose Page!\n" );
+		success = false;
+	}
+	else {
+		//Set buttons in corners
+		gButtons[ 0 ].setPosition( 292, 336);
+	}
+	//Load instruction screen texture
+	if( !gInstructionTexture.loadFromFile( "media/StartPage.bmp" ) ) {
+		printf( "Failed to load Lose Page!\n" );
+		success = false;
+	}
+	else {
+		//Set buttons in corners
+		gButtons[ 0 ].setPosition( 292, 336);
+	}
 
 	//Load explosionsprite sheet texture
 	if( !gSpriteSheetTexture.loadFromFile( "media/Explosion-Sprite-Sheet.png" ) ) {
@@ -259,6 +285,8 @@ void close()
 	gDotTexture.free();
 	gSpriteSheetTexture.free();
 	gStartTexture.free();
+	gInstructionTexture.free();
+	gTransitionTexture.free();
 	gLoseTexture.free();
 	gBlockTexture.free();
 	gTargetTexture.free();
@@ -367,6 +395,90 @@ void renderMap(vector<int> & marblecollisionX, vector<int> & marblecollisionY, v
 
 int start(int *game_state, int time, int lives)
 {
+	//event handler
+	SDL_Event e;
+
+	//initialize variables
+	int quit = 0;
+	int click = 0;
+		
+	//set up start screen with play button	
+	while( quit < 2 ) {
+		//Clear screen, set up draw color, then render, text textures and set up renderer
+		SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+		SDL_RenderClear( gRenderer );
+		gStartTexture.render(0,0);
+		SDL_RenderPresent( gRenderer );
+		
+		//Handle events on queue
+		while( SDL_PollEvent( &e ) != 0 ) {
+			//User requests quit
+			if( e.type == SDL_QUIT ) {
+				//exit
+				*game_state = 9;	
+				return 0;
+			}
+			for( int i = 0; i < TOTAL_BUTTONS; ++i ) {	
+				if(gButtons[ i ].handleEvent( &e )) {
+					click=1;
+					quit++;
+					//button has been clicked
+				}
+			}						
+		}
+		//Update screen
+		SDL_RenderPresent( gRenderer );	
+				
+	}
+	if (click==1) *game_state = *game_state + 1;
+	//return click;		
+
+}
+int instruction(int *game_state, int time, int lives)
+{
+	
+	//event handler
+	SDL_Event e;
+
+	//initialize variables
+	int quit = 0;
+	int click = 0;
+		
+	//set up start screen with play button	
+	while( quit < 2 ) {
+
+		//Clear screen, set up draw color, then render, text textures and set up renderer
+		SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
+		SDL_RenderClear( gRenderer );
+		gInstructionTexture.render(0,0);
+		SDL_RenderPresent( gRenderer );
+		
+		//Handle events on queue
+		while( SDL_PollEvent( &e ) != 0 ) {
+			//User requests quit
+			if( e.type == SDL_QUIT ) {
+				//exit
+				*game_state = 9;	
+				return 0;
+			}
+			for( int i = 0; i < TOTAL_BUTTONS; ++i ) {	
+				if(gButtons[ i ].handleEvent( &e )) {
+					click=1;
+					quit++;
+					//button has been clicked
+				}
+			}						
+		}
+		//Update screen
+		SDL_RenderPresent( gRenderer );	
+				
+	}
+	if (click==1) *game_state = *game_state + 1;
+	//return click;		
+
+}
+int transition(int *game_state, int time, int lives)
+{
 	//Set text color as black
 	SDL_Color textColor = { 0, 0, 0, 255 };	
 
@@ -398,7 +510,7 @@ int start(int *game_state, int time, int lives)
 		//Clear screen, set up draw color, then render, text textures and set up renderer
 		SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 		SDL_RenderClear( gRenderer );
-		gStartTexture.render(0,0);
+		gTransitionTexture.render(0,0);
 		gTimeTextTexture.render(300,50);
 		gLivesTexture.render(300, 0);
 		SDL_RenderPresent( gRenderer );
@@ -428,18 +540,10 @@ int start(int *game_state, int time, int lives)
 
 }
 
+
 int lose(int *game_state, int time, int lives)
 {
 
-	//Set text color as black
-	SDL_Color textColor = { 0, 0, 0, 255 };	
-
-	//In memory text stream, set up lose message to display
-	stringstream livesText;
-	livesText.str( "" );
-	livesText << "YOU LOSE";
-	
-	//MAKE TEXTURE WITH A CLOSE BUTTON
 
 	//event handler
 	SDL_Event e;
@@ -450,16 +554,11 @@ int lose(int *game_state, int time, int lives)
 	
 	//lose screen
 	while( quit < 2 ) {
-		//load text
-		if( !gLivesTexture.loadFromRenderedText( livesText.str().c_str(), textColor ) ) {
-			printf( "Unable to render time texture!\n" );
-		}
 
 		//Clear screen, set draw color, render texts and set up renderer
 		SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
 		SDL_RenderClear( gRenderer );
 		gLoseTexture.render(0,0);
-		gLivesTexture.render(300, 0);
 		SDL_RenderPresent( gRenderer );
 		
 		//Handle events on queue
@@ -467,7 +566,7 @@ int lose(int *game_state, int time, int lives)
 			//User requests quit
 			if( e.type == SDL_QUIT ) {
 				//exit
-				*game_state = 9;
+				*game_state = 13;
 				return 0;
 			}
 			for( int i = 0; i < TOTAL_BUTTONS; ++i ) {	
@@ -553,7 +652,7 @@ int play(string lvl, int *game_state, int *lives, int *time)
 		while( SDL_PollEvent( &e ) != 0 ) {
 			//User requests quit
 			if( e.type == SDL_QUIT ) {
-				*game_state = 9;
+				*game_state = 13;
 				return -1;
 			}
 			
@@ -592,7 +691,7 @@ int play(string lvl, int *game_state, int *lives, int *time)
 				*game_state = *game_state - 1;
 				*lives=(*lives)-1;
 				if (*lives==0) {
-					*game_state=8;
+					*game_state=12;
 				}
 				timer.pause();
 				*time=timer.getTicks();
@@ -678,23 +777,31 @@ int main( int argc, char* args[] )
 				switch(game_state){
 					case 0: {start(&game_state, time, lives);}				
 						break; 	
-					case 1: play(lvlFiles[3], &game_state, &lives, &time);
-						break;
-					case 2: {start(&game_state, time, lives);}
-						break;	
-					case 3: play(lvlFiles[1], &game_state, &lives, &time);
-						break;
-					case 4: {start(&game_state, time, lives);}
-						break;
-					case 5: play(lvlFiles[2], &game_state, &lives, &time);
-						break;
-					case 6: {start(&game_state, time, lives);}
-						break;
-					case 7: play(lvlFiles[3], &game_state, &lives, &time);
-						break;
-					case 8: {lose(&game_state, time, lives);}	//you lost
+					case 1: {instruction(&game_state, time, lives);}				
 						break; 
-					case 9: {playing=false;}			//end game
+					case 2: {transition(&game_state, time, lives);}
+						break;
+					case 3: play(lvlFiles[0], &game_state, &lives, &time);
+						break;
+					case 4: {transition(&game_state, time, lives);}
+						break;	
+					case 5: play(lvlFiles[1], &game_state, &lives, &time);
+						break;
+					case 6: {transition(&game_state, time, lives);}
+						break;
+					case 7: play(lvlFiles[2], &game_state, &lives, &time);
+						break;
+					case 8: {transition(&game_state, time, lives);}
+						break;
+					case 9: play(lvlFiles[3], &game_state, &lives, &time);
+						break;
+					case 10: {transition(&game_state, time, lives);}
+						break;
+					case 11: play(lvlFiles[4], &game_state, &lives, &time);
+						break;
+					case 12: {lose(&game_state, time, lives);}	//you lost
+						break; 
+					case 13: {playing=false;}			//end game
 						break;
 				}
 			}

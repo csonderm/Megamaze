@@ -1,4 +1,9 @@
 //Hole.cpp
+//Claire Sonderman, Karina Dube, Bobby Flores
+//Fundamentals of Computing II
+//hole obstacle implementation, hole is covered when button is pressed
+
+//Using SDL image, SDL texture, stdio, etc
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -17,11 +22,13 @@ extern SDL_Rect g3SpriteClips[HOLE_FRAMES];
 
 using namespace std;
 
-Hole::Hole(int posX, int posY, int height, int width, string name, int d):Obstacle(posX, posY, height, width, name) {
+//constructor 
+Hole::Hole(int posX, int posY, int height, int width, string name, int d) : Obstacle(posX, posY, height, width, name) {
 	bDirect = d;	// 1 up, 2 right, 3 down, 4 left 
 	covered = 0;	// hole is uncovered
 }
 
+//if marble is uncovered, marbles that collide with hole die
 int Hole::action(Dot* marble){
 	if (covered == 0){
 		marble->setAlive(false);
@@ -35,6 +42,7 @@ int Hole::action(Dot* marble){
 	}
 }
 
+//renders hole and button
 void Hole::render(){
 	if (covered == 0){
 	    gHoleSheetTexture.render(getX(), getY(), &g3SpriteClips[0]);
@@ -58,6 +66,7 @@ void Hole::render(){
 	}
 }
 
+//if button is pressed, hole is covered
 void Hole::changeCovered(int over){
     if (over == 0){
 	if (covered == 0){

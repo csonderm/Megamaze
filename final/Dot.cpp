@@ -22,10 +22,11 @@
 //#include "Hole.h"
 
 using namespace std;
-
+//screen size
 extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;
 
+///SDL images
 extern LTexture gDotTexture;
 extern const int DOT_FRAMES=2;
 extern SDL_Rect g2SpriteClips[DOT_FRAMES];
@@ -40,35 +41,38 @@ bool checkCollision( SDL_Rect a, SDL_Rect b );
 
 Dot::Dot(int x, int y, int type)
 {
-    //Initialize the offsets
-    mPosX = x;
-    mPosY = y;
+	//Initialize the offsets
+	mPosX = x;
+   	mPosY = y;
 
 	//Set collision box dimension
 	mCollider.w = DOT_WIDTH;
 	mCollider.h = DOT_HEIGHT;
 
-    //Initialize the velocity
-    mVelX = 0;
-    mVelY = 0;
+	//Initialize the velocity
+	mVelX = 0;
+	mVelY = 0;
 
-    player = type;
+	player = type;
 	alive = true;
 }
 
+//returns flag determine whether enemy alive is alive
 bool Dot::getAlive(){
 	return alive;
 }
 
+//changes enemy to alive or dead
 void Dot::setAlive(bool a){
 	alive = a;
 }
 
+//returns flag determining whether marble is user or enemy
 int Dot::getPlayer(){
 	return player;
 }
 
-
+//change velocity of marble
 void Dot::setVelocity(int x,int y){
 	mVelX = x;
 	mVelY = y;
@@ -134,7 +138,7 @@ int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int
 					
 		}
 
-
+		//change marble's velocity if it collides with wall
 		if (checkCollision(mCollider, box)){
 			
 			mPosY -= mVelY;
@@ -145,32 +149,32 @@ int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int
 
 	
    //If the dot collided or went too far to the left or right
-	if( ( mPosX < 0 ) || ( mPosX + DOT_WIDTH > SCREEN_WIDTH ) )
-    {
-        //Move back
-        mPosX -= mVelX;
-	mCollider.x = mPosX;
-    }
+	if( ( mPosX < 0 ) || ( mPosX + DOT_WIDTH > SCREEN_WIDTH ) ){
+        	//Move back
+        	mPosX -= mVelX;
+		mCollider.x = mPosX;
+	}
 
   
-    //If the dot collided or went too far up or down
-    if( ( mPosY < 0 ) || ( mPosY + DOT_HEIGHT > SCREEN_HEIGHT ) )
-    {
-        //Move back
-        mPosY -= mVelY;
-	mCollider.y = mPosY;
-    }
+	//If the dot collided or went too far up or down
+	if( ( mPosY < 0 ) || ( mPosY + DOT_HEIGHT > SCREEN_HEIGHT ) ){
+        	//Move back
+        	mPosY -= mVelY;
+		mCollider.y = mPosY;
+    	}
 
 
 	vector<Dot *> tempVec;
-     int exit;
-    //Checking Collision with Obstacle
-    for (int j = 0; j < allObstacles.size(); j++){
-	if ((checkCollision(mCollider, (*allObstacles[j]).mCollider))&&((*this).getAlive()==true)){
+    	int exit;
+   	//Checking Collision with Obstacle
+   	for (int j = 0; j < allObstacles.size(); j++){
+		if ((checkCollision(mCollider, (*allObstacles[j]).mCollider))&&((*this).getAlive()==true)){
 		exit = (*allObstacles[j]).action(this);
 		if (exit == 0) return 0;
 	}
-	else if ((!checkCollision(mCollider, (*allObstacles[j]).mCollider))&&((*allObstacles[j]).getTypeName() == "Button")&&(this == ((*allObstacles[j]).getMarblePtr()))){
+
+	//reset the button 
+	else if ((!checkCollision(mCollider, (*allObstacles[j]).mCollider))&&((*allObstacles[j]).getTypeName() == "Button")&&(this == ((*allObstacles	[j]).getMarblePtr()))){
 		(*allObstacles[j]).resetOver();
 	}
     }
@@ -193,30 +197,17 @@ int Dot::move( vector<Dot*> allMarbles, vector<int> marblecollisionX, vector<int
 					frame = 0;
 				}
 		    }
-		//cout << "MADE IT HERE 2!" << endl;
+
+		//marbles collide with each other
 		if (player == 1 || (*allMarbles[j]).getPlayer()==1){		
-		    cout << "YOU LOSE!!!!!!!" << endl;
-					
 		    return 0;
 		
 		}
 		else{
-		    //Render current frame
-		
-		  
-	
-
+		    //stop rendering enemy marble if it dies
 		   	alive = false; 
 			(*allMarbles[j]).setAlive(false);
-		    //allMarbles.erase(allMarbles.begin()+j);
-		    
-		    //delete temp;	
-
-			
-		    //mPosY = -999;
-		    
-		    //(*allMarbles[j]).mPosX = -999;
-		    
+		
 		}
 		
 		
